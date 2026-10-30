@@ -1,26 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap');
 @import "tailwindcss";
 
+/* ── Mahiraani Design System ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand palette */
+  --color-ivory: #faf8f4;
+  --color-ivory-dark: #f0ece4;
+  --color-stone-50: #fafaf9;
+  --color-wine: #6b2737;
+  --color-wine-light: #8b3a4a;
+  --color-plum: #4a2040;
+  --color-gold: #b8922a;
+  --color-gold-light: #d4ab48;
+  --color-text: #1c1917;
+  --color-text-muted: #78716c;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  font-family: var(--font-sans);
+  background-color: var(--color-ivory);
+  color: var(--color-text);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Headings use serif */
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: 0.01em;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-wine);
+  outline-offset: 2px;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-wine);
+  color: white;
+}
+
+/* Admin area overrides – uses Inter body throughout */
+.admin-body {
+  font-family: var(--font-sans);
+  background: #f9f9f8;
+  color: var(--color-text);
 }

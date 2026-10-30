@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mahiraani – Luxury Indian Jewellery E-commerce
 
-## Getting Started
+Mahiraani is a high-conversion Indian luxury jewellery e-commerce platform built for mobile-first shoppers arriving from Instagram, featuring full catalogue and variant management, inventory control, and secure administrative controls.
 
-First, run the development server:
+---
+
+## 🚀 Running the Application
+
+The development server is running at:
+**[http://localhost:3000](http://localhost:3000)**
+
+### Quick Commands
 
 ```bash
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Run TypeScript type-check
+npm run type-check
+
+# Seed sample jewellery products & categories
+npm run seed
+
+# Open Prisma Studio to inspect the database
+npm run db:studio
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔐 Admin Dashboard Access
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The administrative dashboard allows you to manage products, variants, images, and inventory without writing code:
 
-## Learn More
+- **Dashboard URL**: [http://localhost:3000/admin](http://localhost:3000/admin)
+- **Login URL**: [http://localhost:3000/admin/login](http://localhost:3000/admin/login)
+- **Email**: `admin@mahiraani.com`
+- **Password**: `MahiraaniAdmin@2026`
 
-To learn more about Next.js, take a look at the following resources:
+*(You can change your password or add other administrators anytime).*
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ✨ Admin Product Management Features
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Product Operations**: Create, edit, draft, publish, unpublish, duplicate, and archive products.
+2. **Media Management**: Upload multiple images directly from your computer or phone, drag to reorder, set cover photo, and customize alt text.
+3. **Rich Metadata**: Name, description, category, collection, price in INR, SKU, stock count, material purity details, dimensions, and care instructions.
+4. **Variant Combinations**: Size and colour variant matrix generator with independent pricing, SKUs, inventory counts, and individual swatch images.
+5. **Sample Product**: Seeded with a sample Kundan necklace with size/color options marked clearly as sample.

@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {
@@ -11,6 +10,13 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  images: {
+    // Local uploads are served from /public/uploads/
+    // Add production CDN domains here when ready
+    remotePatterns: [],
+    // Allow local filesystem paths (unoptimized for dev)
+    unoptimized: process.env.NODE_ENV === "development",
   },
 };
 
