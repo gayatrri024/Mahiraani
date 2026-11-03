@@ -91,7 +91,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
     if (conflict) slug = `${slug}-${Date.now()}`;
   }
 
-  const updated = await prisma.$transaction(async (tx: any) => {
+  const updated = await prisma.$transaction(async (tx) => {
     if (collectionIds !== undefined) {
       await tx.productCollection.deleteMany({ where: { productId: id } });
       if (collectionIds.length > 0) {

@@ -8,15 +8,35 @@ import Footer from "@/components/storefront/Footer";
 import CartDrawer from "@/components/storefront/CartDrawer";
 import MobileStickyBar from "@/components/storefront/MobileStickyBar";
 import ProductDetailClient from "@/components/storefront/ProductDetailClient";
+import ProductReviewsSection, {
+  ReviewItem,
+  ReviewStats,
+} from "@/components/storefront/ProductReviewsSection";
 import ProductCard from "@/components/storefront/ProductCard";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
+import { getCustomerSession } from "@/lib/customer";
 
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+export const instant = false;
+
+export async function generateStaticParams() {
+  try {
+    const products = await prisma.product.findMany({
+      where: { status: "published" },
+      select: { slug: true },
+    });
+    return products.map((p) => ({ slug: p.slug }));
+  } catch (error) {
+    console.error("Failed to generate static params for products:", error);
+    return [];
+  }
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -28,11 +48,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: "Product Not Found – Mahiraani" };
 
   return {
-    title: `${product.name} | Mahiraani Jaipur`,
+    title: `${product.name} | MAHIRAANI`,
     description:
       product.shortDescription ||
       product.description ||
-      "Handcrafted royal Indian jewellery from Mahiraani Jaipur.",
+      "Handcrafted jewellery from MAHIRAANI, Pune, India.",
   };
 }
 
@@ -53,6 +73,67 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!product) {
     notFound();
+  }
+
+  // Approved reviews for this product
+  const reviewsData = await prisma.review.findMany({
+    where: {
+      productId: product.id,
+      status: "approved",
+    },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      rating: true,
+      title: true,
+      comment: true,
+      customerName: true,
+      isVerifiedPurchase: true,
+      images: true,
+      createdAt: true,
+    },
+  });
+
+  const totalReviews = reviewsData.length;
+  const averageRating =
+    totalReviews > 0
+      ? Number((reviewsData.reduce((acc, r) => acc + r.rating, 0) / totalReviews).toFixed(1))
+      : 0;
+
+  const ratingCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  for (const r of reviewsData) {
+    if (r.rating in ratingCounts) {
+      ratingCounts[r.rating]++;
+    }
+  }
+
+  const reviewStats: ReviewStats = {
+    totalReviews,
+    averageRating,
+    ratingCounts,
+  };
+
+  // Check viewer review eligibility
+  const session = await getCustomerSession();
+  let isEligible = false;
+  let eligibleOrderId: string | null = null;
+
+  if (session) {
+    const eligibleOrder = await prisma.order.findFirst({
+      where: {
+        customerPhone: session.phone,
+        fulfilmentStatus: "delivered",
+        paymentStatus: { notIn: ["cancelled", "failed"] },
+        items: { some: { productId: product.id } },
+        reviews: { none: { productId: product.id } },
+      },
+      select: { id: true },
+    });
+
+    if (eligibleOrder) {
+      isEligible = true;
+      eligibleOrderId = eligibleOrder.id;
+    }
   }
 
   // Related products
@@ -102,9 +183,25 @@ export default async function ProductDetailPage({ params }: Props) {
         </nav>
 
         {/* Product Details Component */}
-        <ProductDetailClient product={product} />
+        <ProductDetailClient
+          product={product}
+          reviewStats={{ totalReviews, averageRating }}
+        />
 
-        {/* Related Heirlooms */}
+        {/* Patron Reviews & Reflections Section */}
+        <ProductReviewsSection
+          productId={product.id}
+          productName={product.name}
+          initialReviews={reviewsData as ReviewItem[]}
+          initialStats={reviewStats}
+          viewerEligibility={{
+            isEligible,
+            eligibleOrderId,
+            customerName: session?.name || null,
+          }}
+        />
+
+        {/* Related Designs */}
         {related.length > 0 && (
           <section className="mt-24 pt-12 border-t border-stone-200">
             <div className="text-center mb-10">

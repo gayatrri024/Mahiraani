@@ -92,6 +92,7 @@ model Product {
   wishlistItems WishlistItem[]
   orderItems    OrderItem[]
   cartItems     CartItem[]
+  reviews       Review[]
 
   @@index([status])
   @@index([slug])
@@ -196,6 +197,8 @@ model Order {
   customerName     String
   customerEmail    String
   customerPhone    String
+  customerId       String?
+  customer         Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
   accessToken      String @unique @default(cuid())
 
   addressLine1     String
@@ -227,8 +230,9 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  items  OrderItem[]
-  events OrderEvent[]
+  items   OrderItem[]
+  events  OrderEvent[]
+  reviews Review[]
 }
 
 model OrderItem {
@@ -293,3 +297,60 @@ model AuditLog {
   @@index([adminUserId])
   @@index([entityType, entityId])
 }
+
+// ─── Customer Records (Guest-First Persistence) ──────────────────────────────
+
+model Customer {
+  id        String    @id @default(cuid())
+  phone     String    @unique
+  name      String
+  email     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  orders    Order[]
+  reviews   Review[]
+
+  @@index([phone])
+}
+
+// ─── Verified Product Reviews ─────────────────────────────────────────────────
+
+model Review {
+  id                 String    @id @default(cuid())
+  productId          String
+  product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderId            String
+  order              Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customerId         String?
+  customer           Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  rating             Int       // 1 - 5 stars
+  title              String?
+  comment            String
+  customerName       String    // Verified display name
+  isVerifiedPurchase Boolean   @default(true) // Backend-enforced only
+  status             String    @default("pending") // "pending" | "approved" | "rejected"
+  images             String?   // JSON array of image URLs
+  adminNotes         String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([orderId, productId])
+  @@index([productId, status])
+  @@index([status])
+}
+
+// ─── OTP Verifications (Rate-Limited & Expiring) ───────────────────────────────
+
+model OtpVerification {
+  id        String    @id @default(cuid())
+  phone     String
+  otpHash   String
+  expiresAt DateTime
+  attempts  Int       @default(0)
+  verified  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  @@index([phone])
+}
+

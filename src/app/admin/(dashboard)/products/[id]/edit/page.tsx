@@ -1,14 +1,18 @@
 // src/app/admin/products/[id]/edit/page.tsx – Edit existing product
 
+import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import ProductForm from "@/components/admin/products/ProductForm";
+import ProductForm, { type ProductFormData } from "@/components/admin/products/ProductForm";
 
-export const metadata = { title: "Edit Product – Mahiraani Admin" };
+export const metadata = { title: "Edit Product – MAHIRAANI Admin" };
+export const instant = false;
+export type { ProductFormData };
 
 type Params = Promise<{ id: string }>;
 
 export default async function EditProductPage({ params }: { params: Params }) {
+  await connection();
   const { id } = await params;
 
   const [product, categories, collections] = await Promise.all([
@@ -49,51 +53,4 @@ export default async function EditProductPage({ params }: { params: Params }) {
   );
 }
 
-export type ProductFormData = {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  shortDescription: string | null;
-  status: string;
-  basePrice: number | null;
-  comparePrice: number | null;
-  sku: string | null;
-  stock: number | null;
-  lowStockThreshold: number | null;
-  material: string | null;
-  finish: string | null;
-  dimensions: string | null;
-  weight: string | null;
-  closureType: string | null;
-  careInstructions: string | null;
-  originDetails: string | null;
-  packageContents: string | null;
-  hasVariants: boolean;
-  sizeOptions: string | null;
-  colourOptions: string | null;
-  categoryId: string | null;
-  isSample: boolean;
-  images: {
-    id: string;
-    url: string;
-    altText: string | null;
-    sortOrder: number;
-    isCover: boolean;
-  }[];
-  variants: {
-    id: string;
-    name: string;
-    options: string;
-    price: number;
-    comparePrice: number | null;
-    sku: string | null;
-    stock: number;
-    isActive: boolean;
-    sortOrder: number;
-  }[];
-  collections: {
-    collectionId: string;
-    collection: { id: string; name: string };
-  }[];
-};
+

@@ -1,8 +1,12 @@
 // src/app/admin/page.tsx – Admin dashboard home
 
+import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const instant = false;
+
 export default async function AdminDashboardPage() {
+  await connection();
   const [productCount, orderCount, draftCount] = await Promise.all([
     prisma.product.count({ where: { status: "published" } }),
     prisma.order.count(),

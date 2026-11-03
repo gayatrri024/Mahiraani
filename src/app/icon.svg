@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2C168" />
+      <stop offset="50%" stop-color="#B8922A" />
+      <stop offset="100%" stop-color="#9E7728" />
+    </linearGradient>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FAF0F2" />
+    </radialGradient>
+  </defs>
+
+  <rect width="100" height="100" rx="22" fill="#FAF8F4" stroke="#B8922A" stroke-width="2" />
+
+  <!-- 7-PETAL SACRED LOTUS -->
+  <!-- Petal 1: Outer Base Left -->
+  <path
+    d="M 46 73 C 30 73, 14 68, 11 58 C 11 54, 22 52, 34 60 C 40 64, 44 69, 46 73 Z"
+    fill="#F4E6EA"
+    stroke="#6B2737"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Petal 7: Outer Base Right -->
+  <path
+    d="M 54 73 C 70 73, 86 68, 89 58 C 89 54, 78 52, 66 60 C 60 64, 56 69, 54 73 Z"
+    fill="#F4E6EA"
+    stroke="#6B2737"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Petal 2: Mid-Spread Left -->
+  <path
+    d="M 47 71 C 33 66, 17 52, 19 38 C 24 38, 33 46, 42 58 C 45 63, 46 68, 47 71 Z"
+    fill="#F4E6EA"
+    stroke="#6B2737"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Petal 6: Mid-Spread Right -->
+  <path
+    d="M 53 71 C 67 66, 83 52, 81 38 C 76 38, 67 46, 58 58 C 55 63, 54 68, 53 71 Z"
+    fill="#F4E6EA"
+    stroke="#6B2737"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Petal 3: Inner Upper Left -->
+  <path
+    d="M 48 70 C 41 57, 28 41, 33 24 C 39 27, 45 42, 49 59 C 49 64, 48 68, 48 70 Z"
+    fill="#FAF0F2"
+    stroke="#6B2737"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Petal 5: Inner Upper Right -->
+  <path
+    d="M 52 70 C 59 57, 72 41, 67 24 C 61 27, 55 42, 51 59 C 51 64, 52 68, 52 70 Z"
+    fill="#FAF0F2"
+    stroke="#6B2737"
+    stroke-width="2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Petal 4: Central Crown Petal -->
+  <path
+    d="M 50 12 C 43 28, 42 50, 50 71 C 58 50, 57 28, 50 12 Z"
+    fill="#FAF0F2"
+    stroke="#6B2737"
+    stroke-width="2.2"
+    stroke-linejoin="round"
+  />
+
+  <!-- Golden Spine & Base Arc -->
+  <path d="M 50 20 L 50 62" stroke="url(#gold)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 3" />
+  <path d="M 42 74 C 46 78, 54 78, 58 74" stroke="url(#gold)" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Sacred Golden Bindu -->
+  <circle cx="50" cy="62" r="3.5" fill="url(#gold)" />
+  <circle cx="50" cy="52" r="2" fill="url(#gold)" />
+</svg>
+

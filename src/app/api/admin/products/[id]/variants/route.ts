@@ -56,7 +56,7 @@ export async function PUT(req: NextRequest, { params }: { params: Params }) {
     return NextResponse.json({ error: parse.error.issues[0].message }, { status: 400 });
   }
 
-  const variants = await prisma.$transaction(async (tx: any) => {
+  const variants = await prisma.$transaction(async (tx) => {
     // Delete existing variants that are no longer in the list
     const existingVariants = await tx.productVariant.findMany({
       where: { productId: id },

@@ -1,11 +1,14 @@
 // src/app/admin/products/page.tsx – Product list page
 
+import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import ProductListClient from "@/components/admin/products/ProductListClient";
 
-export const metadata = { title: "Products – Mahiraani Admin" };
+export const metadata = { title: "Products – MAHIRAANI Admin" };
+export const instant = false;
 
 export default async function AdminProductsPage() {
+  await connection();
   const products = await prisma.product.findMany({
     orderBy: { updatedAt: "desc" },
     include: {

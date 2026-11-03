@@ -41,8 +41,9 @@ export async function POST(_req: NextRequest, { params }: { params: Params }) {
     sku,
     ...rest
   } = original;
+  void _id; void _c; void _u;
 
-  const duplicate = await prisma.$transaction(async (tx: any) => {
+  const duplicate = await prisma.$transaction(async (tx) => {
     const newProduct = await tx.product.create({
       data: {
         ...rest,
@@ -57,6 +58,7 @@ export async function POST(_req: NextRequest, { params }: { params: Params }) {
     const imageMap = new Map<string, string>();
     for (const img of images) {
       const { id: _iid, productId: _pid, ...imgRest } = img;
+      void _iid; void _pid;
       const newImg = await tx.productImage.create({
         data: { ...imgRest, productId: newProduct.id },
       });
@@ -66,6 +68,7 @@ export async function POST(_req: NextRequest, { params }: { params: Params }) {
     // Duplicate variants
     for (const v of variants) {
       const { id: _vid, productId: _vpid, images: vImages, ...vRest } = v;
+      void _vid; void _vpid;
       const newVariant = await tx.productVariant.create({
         data: { ...vRest, productId: newProduct.id },
       });

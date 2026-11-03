@@ -1,11 +1,6 @@
 // src/app/admin/login/layout.tsx
-// Login page must render without AdminShell.
-// This layout overrides the parent /admin/layout for the login route.
+// Dedicated wrapper for the admin login route (no AdminShell)
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <div className="min-h-full bg-stone-50">{children}</div>;
 }

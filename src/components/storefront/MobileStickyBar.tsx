@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, ShoppingBag, MessageCircle, User } from "lucide-react";
+import { Home, Compass, ShoppingBag, MessageCircle } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export default function MobileStickyBar() {
   const pathname = usePathname();
   const { openCart, totalItems } = useCart();
 
-  // Don't show in admin area
-  if (pathname.startsWith("/admin")) return null;
+  // Don't show in admin area or product detail pages (which render their own sticky action bar)
+  if (pathname.startsWith("/admin") || pathname.startsWith("/products/")) return null;
 
   return (
     <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#FAF8F4]/95 backdrop-blur-md border-t border-stone-200/80 px-4 py-2 shadow-lg">
@@ -36,7 +36,7 @@ export default function MobileStickyBar() {
         </Link>
 
         <a
-          href="https://wa.me/919876543210?text=Hello%20Mahiraani%2C%20I%20am%20browsing%20from%20Instagram%20and%20need%20help."
+          href="https://wa.me/919146686816?text=Hello%20MAHIRAANI%2C%20I%20am%20browsing%20and%20need%20assistance."
           target="_blank"
           rel="noopener noreferrer"
           className="flex flex-col items-center gap-1 p-1 text-emerald-700"
@@ -59,16 +59,6 @@ export default function MobileStickyBar() {
           </div>
           <span>Bag</span>
         </button>
-
-        <Link
-          href="/admin"
-          className={`flex flex-col items-center gap-1 p-1 ${
-            pathname.startsWith("/admin") ? "text-[#6B2737] font-bold" : "hover:text-stone-900"
-          }`}
-        >
-          <User className="w-4 h-4" />
-          <span>Admin</span>
-        </Link>
       </div>
     </div>
   );

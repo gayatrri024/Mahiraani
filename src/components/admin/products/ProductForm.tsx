@@ -7,12 +7,60 @@
 // - Rich product details accordion
 // - Save draft / Publish / Archive actions
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import type { ProductFormData } from "@/app/admin/products/[id]/edit/page";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
+
+export interface ProductFormData {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  shortDescription: string | null;
+  status: string;
+  basePrice: number | null;
+  comparePrice: number | null;
+  sku: string | null;
+  stock: number | null;
+  lowStockThreshold: number | null;
+  material: string | null;
+  finish: string | null;
+  dimensions: string | null;
+  weight: string | null;
+  closureType: string | null;
+  careInstructions: string | null;
+  originDetails: string | null;
+  packageContents: string | null;
+  hasVariants: boolean;
+  sizeOptions: string | null;
+  colourOptions: string | null;
+  categoryId: string | null;
+  isSample: boolean;
+  images: {
+    id: string;
+    url: string;
+    altText: string | null;
+    sortOrder: number;
+    isCover: boolean;
+  }[];
+  variants: {
+    id: string;
+    name: string;
+    options: string;
+    price: number;
+    comparePrice: number | null;
+    sku: string | null;
+    stock: number;
+    isActive: boolean;
+    sortOrder: number;
+  }[];
+  collections: {
+    collectionId: string;
+    collection: { id: string; name: string };
+  }[];
+}
 
 interface Category { id: string; name: string }
 interface Collection { id: string; name: string }
@@ -175,36 +223,33 @@ export default function ProductForm({
   }
 
   // ── Image upload ──
-  const handleFileChange = useCallback(
-    async (files: FileList | null) => {
-      if (!files?.length) return;
-      if (!product?.id) {
-        setError("Save the product first before uploading images.");
-        return;
-      }
-      setUploading(true);
-      setError("");
-      try {
-        const fd = new FormData();
-        for (const f of Array.from(files)) fd.append("images", f);
-        const res = await fetch(`/api/admin/products/${product.id}/images`, {
-          method: "POST",
-          body: fd,
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "Upload failed");
-        setImages((prev) => [
-          ...prev,
-          ...data.images.map((img: ImageRow) => ({ ...img })),
-        ]);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setUploading(false);
-      }
-    },
-    [product?.id]
-  );
+  async function handleFileChange(files: FileList | null) {
+    if (!files?.length) return;
+    if (!product?.id) {
+      setError("Save the product first before uploading images.");
+      return;
+    }
+    setUploading(true);
+    setError("");
+    try {
+      const fd = new FormData();
+      for (const f of Array.from(files)) fd.append("images", f);
+      const res = await fetch(`/api/admin/products/${product.id}/images`, {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      setImages((prev) => [
+        ...prev,
+        ...data.images.map((img: ImageRow) => ({ ...img })),
+      ]);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function setCoverImage(imageId: string) {
     if (!product?.id) return;
@@ -763,7 +808,7 @@ export default function ProductForm({
             {variants.length > 0 && (
               <div className="space-y-2">
                 <p className="text-xs text-stone-500 font-medium uppercase tracking-wide">
-                  {variants.length} combination{variants.length !== 1 ? "s" : ""} — remove any you don't sell
+                  {variants.length} combination{variants.length !== 1 ? "s" : ""} — remove any you don&apos;t sell
                 </p>
                 {variants.map((v, idx) => (
                   <div

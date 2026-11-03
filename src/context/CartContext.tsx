@@ -27,13 +27,13 @@ type CartContextType = {
   clearCart: () => void;
   totalItems: number;
   totalPaise: number;
-  freeShippingThreshold: number; // in paise (e.g. 99900 = ₹999)
+  freeShippingThreshold: number; // in paise (e.g. 90000 = ₹900)
   amountForFreeShipping: number;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const FREE_SHIPPING_THRESHOLD = 99900; // ₹999 in paise
+const FREE_SHIPPING_THRESHOLD = 90000; // ₹900 in paise
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -45,12 +45,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     try {
       const saved = localStorage.getItem("mahiraani_cart");
       if (saved) {
-        setItems(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          queueMicrotask(() => {
+            setItems(parsed);
+          });
+        }
       }
     } catch {
       // ignore
     } finally {
-      setIsLoaded(true);
+      queueMicrotask(() => {
+        setIsLoaded(true);
+      });
     }
   }, []);
 

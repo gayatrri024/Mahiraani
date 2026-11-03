@@ -2,34 +2,54 @@
 // src/components/admin/LoginForm.tsx
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlError = searchParams.get("error");
+
+  const getInitialError = () => {
+    if (urlError === "cookie_missing") {
+      return "Authentication cookie was rejected or not sent by your browser. If accessing over Wi-Fi / LAN (HTTP), ensure cookies are enabled in your mobile browser settings.";
+    }
+    if (urlError === "session_invalid") {
+      return "Your previous session has expired. Please sign in again.";
+    }
+    return "";
+  };
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>(getInitialError);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
       const res = await fetch("/api/admin/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
-      const data = await res.json();
+
+      const data = await res.json().catch(() => ({}));
+
       if (!res.ok) {
-        setError(data.error ?? "Login failed");
+        setError(data.error ?? `Login failed (Status: ${res.status})`);
       } else {
-        router.push("/admin");
-        router.refresh();
+        // Use replace() to avoid back-button history loops.
+        // A short 150ms timeout ensures WebKit on iOS / mobile Safari flushes the HTTP-only cookie before navigation.
+        setTimeout(() => {
+          window.location.replace("/admin");
+        }, 150);
       }
-    } catch {
-      setError("Network error. Please try again.");
+    } catch (err) {
+      console.error("[Login Form Error]", err);
+      setError("Network error: Unable to connect to server. Please check your Wi-Fi connection.");
     } finally {
       setLoading(false);
     }
@@ -41,7 +61,10 @@ export default function LoginForm() {
       className="bg-white rounded-2xl border border-stone-200 shadow-sm p-8 space-y-5"
     >
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+        <div
+          role="alert"
+          className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm leading-relaxed"
+        >
           {error}
         </div>
       )}

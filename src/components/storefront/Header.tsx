@@ -2,14 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingBag, Search, Menu, X, MessageCircle, Heart, User } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ShoppingBag, Search, Menu, X, MessageCircle, Truck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import Logo from "@/components/brand/Logo";
 
 export default function Header() {
+  const router = useRouter();
   const { openCart, totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  function handleSearchSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/collections/all?q=${encodeURIComponent(q)}`);
+      setSearchOpen(false);
+    }
+  }
 
   const navLinks = [
     { label: "All Jewellery", href: "/collections/all" },
@@ -17,7 +29,7 @@ export default function Header() {
     { label: "Necklaces", href: "/collections/necklaces" },
     { label: "Bangles & Kadas", href: "/collections/bangles" },
     { label: "Festive Edit", href: "/collections/festive-edit" },
-    { label: "Our Craft", href: "#our-craft" },
+    { label: "Track My Order", href: "/track-order" },
   ];
 
   return (
@@ -60,20 +72,22 @@ export default function Header() {
               </Link>
             </nav>
 
-            {/* Center Logo */}
+            {/* Center Logo with 7-Petal Sacred Lotus Emblem */}
             <div className="flex-1 lg:flex-initial text-center">
-              <Link href="/" className="inline-block group py-2">
-                <span className="block font-serif text-2xl sm:text-3xl tracking-[0.22em] text-stone-900 font-normal uppercase group-hover:text-[#6B2737] transition-colors">
-                  MAHIRAANI
-                </span>
-                <span className="block text-[9px] tracking-[0.35em] text-[#B8922A] uppercase font-medium -mt-1">
-                  Royal Heirlooms
-                </span>
-              </Link>
+              <Logo size="md" href="/" />
             </div>
 
             {/* Desktop Right Nav & Icons */}
             <div className="flex items-center gap-3 sm:gap-4">
+              <Link
+                href="/track-order"
+                className="hidden lg:flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 p-2"
+                title="Track My Order & Purchases"
+              >
+                <Truck className="w-4 h-4 text-[#B8922A]" />
+                <span className="hidden xl:inline text-[11px] uppercase tracking-wider">Track Order</span>
+              </Link>
+
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
                 className="hidden lg:flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 p-2"
@@ -84,7 +98,7 @@ export default function Header() {
               </button>
 
               <a
-                href="https://wa.me/919876543210?text=Hello%20Mahiraani%20Jewellery%2C%20I%20have%20an%20enquiry."
+                href="https://wa.me/919146686816?text=Hello%20MAHIRAANI%2C%20I%20have%20an%20enquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:flex items-center gap-1.5 text-stone-700 hover:text-stone-950 p-2"
@@ -92,14 +106,6 @@ export default function Header() {
               >
                 <MessageCircle className="w-4 h-4 text-emerald-600" />
               </a>
-
-              <Link
-                href="/admin"
-                className="text-stone-600 hover:text-[#6B2737] p-2"
-                title="Admin Dashboard"
-              >
-                <User className="w-4 h-4" />
-              </Link>
 
               {/* Cart Drawer Trigger */}
               <button
@@ -124,8 +130,8 @@ export default function Header() {
         {/* Expandable Search Bar */}
         {searchOpen && (
           <div className="border-t border-stone-200 bg-white py-3 px-4 shadow-sm animate-fadeIn">
-            <div className="max-w-2xl mx-auto flex items-center gap-2">
-              <Search className="w-4 h-4 text-stone-400" />
+            <form onSubmit={handleSearchSubmit} className="max-w-2xl mx-auto flex items-center gap-2">
+              <Search className="w-4 h-4 text-stone-400 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
@@ -136,19 +142,28 @@ export default function Header() {
               />
               {searchQuery && (
                 <button
+                  type="button"
                   onClick={() => setSearchQuery("")}
-                  className="text-xs text-stone-400 hover:text-stone-600"
+                  className="text-xs text-stone-400 hover:text-stone-600 px-1"
                 >
                   Clear
                 </button>
               )}
               <button
+                type="submit"
+                className="px-3 py-1 bg-[#6B2737] text-white rounded text-xs font-medium hover:bg-[#521e2a] transition-colors shrink-0"
+              >
+                Search
+              </button>
+              <button
+                type="button"
                 onClick={() => setSearchOpen(false)}
                 className="text-stone-400 hover:text-stone-600 p-1"
+                aria-label="Close search"
               >
                 <X className="w-4 h-4" />
               </button>
-            </div>
+            </form>
           </div>
         )}
       </header>
@@ -163,14 +178,7 @@ export default function Header() {
           <div className="fixed inset-y-0 left-0 w-3/4 max-w-xs bg-[#FAF8F4] shadow-xl p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between pb-6 border-b border-stone-200">
-                <div>
-                  <span className="font-serif text-xl tracking-[0.2em] text-stone-900 uppercase">
-                    MAHIRAANI
-                  </span>
-                  <span className="block text-[8px] tracking-[0.3em] text-[#B8922A] uppercase font-medium">
-                    Royal Heirlooms
-                  </span>
-                </div>
+                <Logo size="sm" href="/" />
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-1 text-stone-400 hover:text-stone-700"
@@ -195,7 +203,7 @@ export default function Header() {
 
             <div className="pt-6 border-t border-stone-200 space-y-3">
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/919146686816"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 py-2.5 px-4 bg-[#25D366] text-white rounded-lg text-xs font-semibold uppercase tracking-wider"
@@ -203,13 +211,6 @@ export default function Header() {
                 <MessageCircle className="w-4 h-4" />
                 <span>WhatsApp Stylist</span>
               </a>
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-center py-2 text-xs text-stone-500 hover:text-stone-800"
-              >
-                Admin Management Portal →
-              </Link>
             </div>
           </div>
         </div>

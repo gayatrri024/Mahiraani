@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingBag, Eye, Check } from "lucide-react";
+import { ShoppingBag, Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatINR } from "@/lib/money";
 
@@ -90,7 +90,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-stone-100 text-stone-400 text-xs font-serif">
-            Mahiraani Heirlooms
+            MAHIRAANI
           </div>
         )}
 
@@ -111,12 +111,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
         </div>
 
-        {/* Quick actions on hover */}
-        <div className="absolute bottom-3 inset-x-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        {/* Quick actions (visible on mobile, hover on desktop) */}
+        <div className="absolute bottom-2.5 inset-x-2.5 sm:bottom-3 sm:inset-x-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 z-10">
           <button
             onClick={handleQuickAdd}
             disabled={isAdding}
-            className="flex-1 py-2.5 px-3 bg-[#1C1917]/90 hover:bg-[#6B2737] text-white rounded-xl text-xs uppercase tracking-wider font-medium flex items-center justify-center gap-1.5 shadow-md backdrop-blur-xs transition-colors"
+            className="flex-1 py-2 sm:py-2.5 px-3 bg-[#1C1917]/90 sm:bg-[#1C1917]/90 hover:bg-[#6B2737] text-white rounded-xl text-[11px] sm:text-xs uppercase tracking-wider font-medium flex items-center justify-center gap-1.5 shadow-md backdrop-blur-xs transition-colors"
           >
             {isAdding ? (
               <>
@@ -167,8 +167,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          <span className="text-[10px] text-stone-400 uppercase tracking-widest font-medium">
-            Hallmarked
+          <span className="text-[10px] text-[#B8922A] uppercase tracking-widest font-medium">
+            Anti-Tarnish
           </span>
         </div>
       </div>

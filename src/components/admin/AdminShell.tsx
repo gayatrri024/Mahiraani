@@ -4,8 +4,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { AdminSession } from "@/lib/auth";
+import Logo from "@/components/brand/Logo";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: "⊞" },
@@ -13,6 +14,7 @@ const NAV = [
   { href: "/admin/categories", label: "Categories", icon: "⊟" },
   { href: "/admin/collections", label: "Collections", icon: "◻" },
   { href: "/admin/orders", label: "Orders", icon: "◷" },
+  { href: "/admin/reviews", label: "Reviews", icon: "★" },
 ];
 
 export default function AdminShell({
@@ -23,12 +25,15 @@ export default function AdminShell({
   session: AdminSession;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   async function handleLogout() {
-    await fetch("/api/admin/auth/logout", { method: "POST" });
-    router.push("/admin/login");
+    try {
+      await fetch("/api/admin/auth/logout", { method: "POST" });
+    } finally {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.href = "/admin/login";
+    }
   }
 
   return (
@@ -47,9 +52,8 @@ export default function AdminShell({
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="p-5 border-b border-stone-700">
-          <span className="text-lg font-semibold tracking-widest text-stone-100">MAHIRAANI</span>
-          <p className="text-xs text-stone-400 mt-0.5">Admin Panel</p>
+        <div className="p-5 border-b border-stone-800">
+          <Logo size="sm" variant="light" tagline="Store Admin Panel" href="/admin" />
         </div>
 
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">

@@ -6,7 +6,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { formatINR } from "@/lib/money";
-import type { ProductWithPreview } from "@/app/admin/products/page";
+import type { ProductWithPreview } from "@/app/admin/(dashboard)/products/page";
 
 const STATUS_COLOURS: Record<string, string> = {
   published: "bg-emerald-100 text-emerald-700",

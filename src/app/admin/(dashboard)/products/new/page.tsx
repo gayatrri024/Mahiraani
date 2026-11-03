@@ -1,11 +1,14 @@
 // src/app/admin/products/new/page.tsx – Create new product
 
+import { connection } from "next/server";
 import { prisma } from "@/lib/prisma";
 import ProductForm from "@/components/admin/products/ProductForm";
 
-export const metadata = { title: "New Product – Mahiraani Admin" };
+export const metadata = { title: "New Product – MAHIRAANI Admin" };
+export const instant = false;
 
 export default async function NewProductPage() {
+  await connection();
   const [categories, collections] = await Promise.all([
     prisma.category.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.collection.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" } }),

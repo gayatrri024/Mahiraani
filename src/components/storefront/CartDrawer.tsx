@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, Plus, Minus, Trash2, ShoppingBag, ShieldCheck, ArrowRight, MessageCircle, Gift } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatINR } from "@/lib/money";
+import CheckoutModal from "@/components/storefront/CheckoutModal";
 
 export default function CartDrawer() {
   const {
@@ -14,6 +15,7 @@ export default function CartDrawer() {
     closeCart,
     removeItem,
     updateQuantity,
+    clearCart,
     totalItems,
     totalPaise,
     freeShippingThreshold,
@@ -22,6 +24,8 @@ export default function CartDrawer() {
 
   const [notes, setNotes] = useState("");
   const [isGiftWrap, setIsGiftWrap] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const GIFT_PACKAGING_PAISE = 7000; // ₹70 extra
 
   // Prevent background scroll when drawer is open
   useEffect(() => {
@@ -38,13 +42,14 @@ export default function CartDrawer() {
   if (!isOpen) return null;
 
   const progressPercent = Math.min(100, Math.round((totalPaise / freeShippingThreshold) * 100));
+  const finalTotalPaise = totalPaise + (isGiftWrap ? GIFT_PACKAGING_PAISE : 0);
 
   // WhatsApp Order message
   const waItemsText = items
     .map((item, idx) => `${idx + 1}. ${item.name} (${item.variantName || "Standard"}) x${item.quantity} = ${formatINR(item.price * item.quantity)}`)
     .join("%0A");
-  const waTotalText = formatINR(totalPaise);
-  const waUrl = `https://wa.me/919876543210?text=Hello%20Mahiraani%20Jewellery%2C%20I%20would%20like%20to%20place%20an%20order%20for%3A%0A%0A${waItemsText}%0A%0ATotal%3A%20${encodeURIComponent(waTotalText)}${isGiftWrap ? "%0A%2B%20Complimentary%20Gift%20Packaging%20Requested" : ""}${notes ? `%0ANote%3A%20${encodeURIComponent(notes)}` : ""}`;
+  const waTotalText = formatINR(finalTotalPaise);
+  const waUrl = `https://wa.me/919146686816?text=Hello%20MAHIRAANI%2C%20I%20would%20like%20to%20place%20an%20order%20for%3A%0A%0A${waItemsText}${isGiftWrap ? "%0A%2B%20Signature%20Gift%20Packaging%20(%E2%82%B970)" : ""}%0A%0ATotal%3A%20${encodeURIComponent(waTotalText)}${notes ? `%0ANote%3A%20${encodeURIComponent(notes)}` : ""}`;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden animate-fadeIn">
@@ -102,7 +107,7 @@ export default function CartDrawer() {
                 </div>
                 <h3 className="font-serif text-xl text-stone-900 mb-2">Your Jewellery Box is Empty</h3>
                 <p className="text-xs text-stone-500 max-w-xs mx-auto mb-6">
-                  Discover our handcrafted regal heirlooms, curated earrings, and festive sets.
+                  Discover our handcrafted jewellery, curated earrings, and festive sets.
                 </p>
                 <button
                   onClick={closeCart}
@@ -196,15 +201,18 @@ export default function CartDrawer() {
 
             {items.length > 0 && (
               <div className="pt-2">
-                <label className="flex items-center gap-2 p-3 bg-[#FDF9F2] border border-[#E9DFCE] rounded-lg cursor-pointer text-xs text-stone-700">
-                  <input
-                    type="checkbox"
-                    checked={isGiftWrap}
-                    onChange={(e) => setIsGiftWrap(e.target.checked)}
-                    className="rounded text-[#6B2737] focus:ring-[#6B2737]"
-                  />
-                  <Gift className="w-4 h-4 text-[#B8922A]" />
-                  <span>Send in signature royal velvet gift packaging (Complimentary)</span>
+                <label className="flex items-center justify-between gap-3 p-3 bg-[#FDF9F2] border border-[#E9DFCE] rounded-lg cursor-pointer text-xs text-stone-700 hover:border-[#B8922A] transition-colors">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={isGiftWrap}
+                      onChange={(e) => setIsGiftWrap(e.target.checked)}
+                      className="rounded text-[#6B2737] focus:ring-[#6B2737]"
+                    />
+                    <Gift className="w-4 h-4 text-[#B8922A] shrink-0" />
+                    <span>Add signature gift packaging</span>
+                  </div>
+                  <span className="font-semibold text-[#6B2737] shrink-0">+₹70</span>
                 </label>
 
                 <div className="mt-3">
@@ -223,14 +231,29 @@ export default function CartDrawer() {
           {/* Footer */}
           {items.length > 0 && (
             <div className="p-5 bg-white border-t border-stone-200 space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-stone-500 font-medium">Subtotal</span>
-                <span className="text-base font-semibold text-stone-900 font-serif tracking-wide">
-                  {formatINR(totalPaise)}
-                </span>
+              <div className="space-y-1.5 text-xs">
+                <div className="flex items-center justify-between text-stone-600">
+                  <span>Items Subtotal</span>
+                  <span>{formatINR(totalPaise)}</span>
+                </div>
+                {isGiftWrap && (
+                  <div className="flex items-center justify-between text-[#6B2737] font-medium">
+                    <span className="flex items-center gap-1">
+                      <Gift className="w-3.5 h-3.5" />
+                      Signature Gift Packaging
+                    </span>
+                    <span>+₹70</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between text-sm pt-2 border-t border-stone-100">
+                  <span className="text-stone-900 font-semibold">Total</span>
+                  <span className="text-base font-semibold text-[#6B2737] font-serif tracking-wide">
+                    {formatINR(finalTotalPaise)}
+                  </span>
+                </div>
               </div>
               <p className="text-[11px] text-stone-400">
-                Inclusive of all taxes. Free insured delivery within India.
+                Inclusive of all taxes. Free insured delivery within India. Prepaid orders only.
               </p>
 
               {/* Instant WhatsApp Order (High Conversion for Indian Instagram audience) */}
@@ -246,30 +269,40 @@ export default function CartDrawer() {
 
               {/* Standard Checkout */}
               <button
-                onClick={() => {
-                  alert(
-                    "Checkout Demo: Standard payment gateway (Razorpay / UPI / Cards) can be connected when ready. For immediate orders, you can use the WhatsApp button above!"
-                  );
-                }}
+                onClick={() => setIsCheckoutOpen(true)}
                 className="w-full py-3.5 px-4 bg-[#6B2737] hover:bg-[#541e2b] text-white rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all"
               >
-                <span>Proceed to Checkout • {formatINR(totalPaise)}</span>
+                <span>Proceed to Checkout • {formatINR(finalTotalPaise)}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="pt-2 flex items-center justify-center gap-4 text-[10px] text-stone-500 uppercase tracking-wider">
+              <div className="pt-2 flex items-center justify-center gap-2.5 text-[10px] text-stone-500 uppercase tracking-wider">
                 <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> 100% Certified Hallmark
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#B8922A]" /> Anti-Tarnish Quality
                 </span>
                 <span>•</span>
-                <span>COD Available</span>
+                <span>Free Ship &gt; ₹900</span>
                 <span>•</span>
-                <span>7-Day Exchange</span>
+                <span>Prepaid Only (No COD)</span>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      {/* Real Luxury Checkout Flow */}
+      <CheckoutModal
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        items={items}
+        isGiftWrap={isGiftWrap}
+        notes={notes}
+        totalPaise={totalPaise}
+        finalTotalPaise={finalTotalPaise}
+        onOrderSuccess={() => {
+          clearCart();
+        }}
+      />
     </div>
   );
 }

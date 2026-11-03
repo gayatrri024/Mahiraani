@@ -9,13 +9,13 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
-  Sparkles,
   ChevronDown,
   Check,
   Plus,
   Minus,
-  Heart,
-  Share2
+  Gift,
+  CreditCard,
+  Star,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { formatINR } from "@/lib/money";
@@ -30,7 +30,7 @@ type ImageType = {
 type VariantType = {
   id: string;
   name: string;
-  options: any;
+  options: string | Record<string, string>;
   price: number;
   comparePrice?: number | null;
   sku?: string | null;
@@ -60,9 +60,16 @@ type ProductDetailProps = {
     images: ImageType[];
     variants: VariantType[];
   };
+  reviewStats?: {
+    totalReviews: number;
+    averageRating: number;
+  };
 };
 
-export default function ProductDetailClient({ product }: ProductDetailProps) {
+export default function ProductDetailClient({
+  product,
+  reviewStats = { totalReviews: 0, averageRating: 0 },
+}: ProductDetailProps) {
   const { addItem } = useCart();
 
   const [activeImageIdx, setActiveImageIdx] = useState(0);
@@ -109,14 +116,14 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
   };
 
   // WhatsApp direct buy link
-  const waUrl = `https://wa.me/919876543210?text=Hello%20Mahiraani%20Jewellery%2C%20I%20am%20interested%20in%20ordering%3A%0A*${encodeURIComponent(
+  const waUrl = `https://wa.me/919146686816?text=Hello%20MAHIRAANI%2C%20I%20am%20interested%20in%20ordering%3A%0A*${encodeURIComponent(
     product.name
   )}*%0A${selectedVariant ? `Variant%3A%20${encodeURIComponent(selectedVariant.name)}%0A` : ""}Price%3A%20${encodeURIComponent(
     formatINR(currentPrice)
   )}%0APlease%20confirm%20availability%20and%20delivery%20time.`;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 pb-24 lg:pb-0">
       {/* ── Left Column: Media Gallery ── */}
       <div className="lg:col-span-7 flex flex-col-reverse sm:flex-row gap-4">
         {/* Thumbnails */}
@@ -157,7 +164,7 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-stone-400 font-serif">
-              Mahiraani Royal Collection
+              MAHIRAANI
             </div>
           )}
 
@@ -174,7 +181,7 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
               </span>
             )}
             <span className="bg-white/90 text-[#6B2737] text-[10px] uppercase tracking-wider font-semibold px-2.5 py-0.5 rounded-full backdrop-blur-xs">
-              Handcrafted in Jaipur
+              Handcrafted in India
             </span>
           </div>
         </div>
@@ -193,9 +200,9 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
                 {product.category.name}
               </Link>
             )}
-            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-800 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              100% Certified Hallmark
+            <span className="inline-flex items-center gap-1 text-[11px] text-[#8C6D1F] font-medium bg-[#FBF7EE] px-2.5 py-0.5 rounded-full border border-[#EADBBD]">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#B8922A]" />
+              Anti-Tarnish Everyday Wear
             </span>
           </div>
 
@@ -203,6 +210,47 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
           <h1 className="font-serif text-3xl sm:text-4xl text-stone-900 leading-tight">
             {product.name}
           </h1>
+
+          {/* Rating Summary Link */}
+          <div className="mt-2.5 flex items-center gap-2">
+            {reviewStats && reviewStats.totalReviews > 0 ? (
+              <a
+                href="#patron-reviews"
+                className="inline-flex items-center gap-1.5 text-xs text-stone-700 hover:text-[#6B2737] group transition-colors"
+              >
+                <div className="flex items-center gap-0.5 text-[#B8922A]">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      className={`w-3.5 h-3.5 ${
+                        s <= Math.round(reviewStats.averageRating)
+                          ? "fill-[#B8922A] text-[#B8922A]"
+                          : "text-stone-200"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="font-semibold text-stone-900">
+                  {reviewStats.averageRating.toFixed(1)}
+                </span>
+                <span className="text-stone-400 group-hover:underline">
+                  ({reviewStats.totalReviews} verified {reviewStats.totalReviews === 1 ? "review" : "reviews"})
+                </span>
+              </a>
+            ) : (
+              <a
+                href="#patron-reviews"
+                className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-800 transition-colors"
+              >
+                <Star className="w-3.5 h-3.5 text-stone-300" />
+                <span className="text-stone-400">No reviews yet</span>
+                <span className="text-stone-300">•</span>
+                <span className="text-[#B8922A] font-medium hover:underline">
+                  Verified patron reviews only
+                </span>
+              </a>
+            )}
+          </div>
 
           {/* Short description */}
           {product.shortDescription && (
@@ -282,7 +330,7 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
                 {isAdded ? (
                   <>
                     <Check className="w-4 h-4 text-emerald-300" />
-                    <span>Added to Royal Bag</span>
+                    <span>Added to Bag</span>
                   </>
                 ) : (
                   <>
@@ -309,20 +357,28 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
           <div className="mt-8 p-4 bg-[#F5F2EB] rounded-2xl border border-stone-200/80 space-y-2.5 text-xs text-stone-700">
             <div className="flex items-center gap-2.5">
               <Truck className="w-4 h-4 text-[#B8922A] shrink-0" />
-              <span><strong>Free Pan-India Express Delivery:</strong> Dispatched in 24-48 hours.</span>
+              <span><strong>Free Shipping on Orders Above ₹900:</strong> Dispatched in 24–48 hours across India.</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <CreditCard className="w-4 h-4 text-[#B8922A] shrink-0" />
+              <span><strong>Prepaid Orders Only:</strong> Fast & secure UPI/Card checkout. No COD.</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <Gift className="w-4 h-4 text-[#B8922A] shrink-0" />
+              <span><strong>Gift Packaging:</strong> Signature gift box available in bag for ₹70 extra.</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-[#B8922A] shrink-0" />
+              <span><strong>Anti-Tarnish Everyday Wear:</strong> Skin-friendly, long-lasting high luster finish.</span>
             </div>
             <div className="flex items-center gap-2.5">
               <RotateCcw className="w-4 h-4 text-[#B8922A] shrink-0" />
-              <span><strong>7-Day Easy Exchange:</strong> Hassle-free size or design replacement.</span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Sparkles className="w-4 h-4 text-[#B8922A] shrink-0" />
-              <span><strong>Royal Keepsake Packaging:</strong> Handcrafted velvet heirloom box included.</span>
+              <span><strong>A Little Note on Returns:</strong> No returns or exchange; 48-hour issue support.</span>
             </div>
           </div>
         </div>
 
-        {/* ── Accordion Specifications ── */}
+        {/* ── Accordion Specifications & Policies ── */}
         <div className="mt-8 border-t border-stone-200 divide-y divide-stone-200">
           {/* Specifications */}
           <div className="py-3">
@@ -332,7 +388,7 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
               }
               className="w-full flex items-center justify-between text-xs uppercase tracking-wider text-stone-900 font-semibold py-1"
             >
-              <span>Material & Craft Specifications</span>
+              <span>Material & Craft Details</span>
               <ChevronDown
                 className={`w-4 h-4 transition-transform duration-200 ${
                   openAccordion === "specifications" ? "rotate-180" : ""
@@ -342,19 +398,19 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
             {openAccordion === "specifications" && (
               <div className="mt-3 text-xs text-stone-600 space-y-2 leading-relaxed animate-fadeIn">
                 <p>
-                  <strong>Material:</strong> {product.material || "Brass alloy with 22K gold micron plating & semi-precious stones"}
+                  <strong>Material:</strong> {product.material || "High-grade alloy with durable anti-tarnish protective layering"}
                 </p>
                 <p>
-                  <strong>Finish:</strong> {product.finish || "Antique Gold / High Luster Polish"}
+                  <strong>Finish:</strong> {product.finish || "Anti-Tarnish Warm Gold Tone Polish"}
                 </p>
                 <p>
-                  <strong>Dimensions:</strong> {product.dimensions || "Handcrafted standard proportions"}
+                  <strong>Type:</strong> Everyday Fashion Jewellery (Not real gold; no hallmarking required)
                 </p>
                 <p>
-                  <strong>Weight:</strong> {product.weight || "Lightweight & comfortable for all-day celebrations"}
+                  <strong>Dimensions:</strong> {product.dimensions || "Standard comfortable proportions"}
                 </p>
                 <p>
-                  <strong>Closure:</strong> {product.closureType || "Push-back / Adjustable drawstring dori"}
+                  <strong>Weight:</strong> {product.weight || "Featherlight & designed for everyday comfort"}
                 </p>
               </div>
             )}
@@ -375,20 +431,20 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
             </button>
             {openAccordion === "care" && (
               <div className="mt-3 text-xs text-stone-600 space-y-1.5 leading-relaxed animate-fadeIn">
-                <p>• Avoid direct contact with perfumes, sanitizers, and cosmetics.</p>
-                <p>• Keep away from moisture; wipe gently with a soft microfibre cloth after wear.</p>
-                <p>• Store in the provided airtight Mahiraani velvet pouch to retain shine.</p>
+                <p>• Keep away from direct spray of perfumes, alcohol-based sanitizers, and harsh cosmetics.</p>
+                <p>• Wipe gently with a soft microfibre cloth after wearing to maintain its anti-tarnish luster.</p>
+                <p>• Store individually in an airtight pouch or box when not in use.</p>
               </div>
             )}
           </div>
 
-          {/* Shipping & Delivery */}
+          {/* Shipping Policy */}
           <div className="py-3">
             <button
               onClick={() => setOpenAccordion(openAccordion === "shipping" ? "" : "shipping")}
               className="w-full flex items-center justify-between text-xs uppercase tracking-wider text-stone-900 font-semibold py-1"
             >
-              <span>Shipping & Delivery Policy</span>
+              <span>Shipping Policy</span>
               <ChevronDown
                 className={`w-4 h-4 transition-transform duration-200 ${
                   openAccordion === "shipping" ? "rotate-180" : ""
@@ -396,13 +452,85 @@ export default function ProductDetailClient({ product }: ProductDetailProps) {
               />
             </button>
             {openAccordion === "shipping" && (
-              <div className="mt-3 text-xs text-stone-600 space-y-1.5 leading-relaxed animate-fadeIn">
-                <p>• Dispatched from our Jaipur atelier within 24 to 48 hours.</p>
-                <p>• Express air delivery to major metros (Delhi, Mumbai, Bengaluru) in 2-4 business days.</p>
-                <p>• Insured pan-India transit with live tracking via SMS and WhatsApp.</p>
+              <div className="mt-3 text-xs text-stone-600 space-y-2 leading-relaxed animate-fadeIn">
+                <p>• <strong>Free Shipping:</strong> Shipping is on us! Enjoy free shipping on orders above ₹900, across India.</p>
+                <p>• <strong>Dispatch:</strong> Orders are packed and dispatched within 24–48 hours of confirmation.</p>
+                <p>• <strong>Delivery:</strong> Should reach you in around 5–7 business days, depending on your pincode.</p>
+                <p>• <strong>Tracking:</strong> Track your shipment via the courier link and AWB sent to your WhatsApp/email, or message our Pune concierge (+91 9146686816) anytime.</p>
               </div>
             )}
           </div>
+
+          {/* Returns & Cancellations Policy */}
+          <div className="py-3">
+            <button
+              onClick={() => setOpenAccordion(openAccordion === "returns" ? "" : "returns")}
+              className="w-full flex items-center justify-between text-xs uppercase tracking-wider text-stone-900 font-semibold py-1"
+            >
+              <span>Returns, Exchanges & Cancellations</span>
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-200 ${
+                  openAccordion === "returns" ? "rotate-180" : ""
+                }`}
+              />
+            </button>
+            {openAccordion === "returns" && (
+              <div className="mt-3 text-xs text-stone-600 space-y-2 leading-relaxed animate-fadeIn">
+                <p className="font-medium text-stone-800">A Little Note on Returns 🌸</p>
+                <p>Every Mahiraani piece is chosen with love, and we hope you love yours just as much!</p>
+                <p>Since each item is special, <strong>we don’t accept returns or exchanges</strong>. However, if something isn’t quite right with your order, we’re here to help:</p>
+                <ul className="list-disc pl-4 space-y-1 text-stone-600">
+                  <li>Let us know within <strong>48 hours</strong> of delivery if your jewellery has an issue.</li>
+                  <li>Contact our customer care team on WhatsApp (<strong>+91 9146686816</strong>) or email <strong>care@mahiraani.com</strong> with your Order Reference ID.</li>
+                  <li>Tell us what went wrong and share 3 clear photos of the jewellery piece.</li>
+                  <li>Our team will review your enquiry and get back to you by email.</li>
+                </ul>
+                <p className="pt-1"><strong>Cancellations:</strong> Free while your order is still in the Confirmed or Packed stage. Once on its way, cancellations are no longer possible.</p>
+                <p><strong>Refunds:</strong> Approved refunds are issued to the original payment method within 5–7 business days.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Add to Bag Bar */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#FAF8F4]/95 backdrop-blur-md border-t border-stone-200/80 px-4 py-3 shadow-xl">
+        <div className="flex items-center gap-3">
+          <div className="flex flex-col shrink-0">
+            <span className="text-[10px] text-stone-400 uppercase tracking-wider">Total</span>
+            <span className="text-base font-semibold text-[#6B2737] font-serif leading-tight">
+              {formatINR(currentPrice * quantity)}
+            </span>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={isAdded}
+            className="flex-1 py-3 px-4 bg-[#6B2737] hover:bg-[#521c29] text-white rounded-xl text-xs uppercase tracking-wider font-semibold flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-90"
+          >
+            {isAdded ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-300" />
+                <span>Added to Bag</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-4 h-4" />
+                <span>Add to Bag</span>
+              </>
+            )}
+          </button>
+
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 bg-[#25D366] hover:bg-[#1fae53] text-white rounded-xl flex items-center justify-center shrink-0 shadow-sm transition-colors"
+            title="Enquire on WhatsApp"
+            aria-label="Enquire on WhatsApp"
+          >
+            <MessageCircle className="w-5 h-5 fill-current" />
+          </a>
         </div>
       </div>
     </div>

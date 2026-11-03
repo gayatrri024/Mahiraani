@@ -11,7 +11,9 @@ import Footer from "@/components/storefront/Footer";
 import CartDrawer from "@/components/storefront/CartDrawer";
 import MobileStickyBar from "@/components/storefront/MobileStickyBar";
 import Link from "next/link";
-import { Sparkles, ArrowRight, ShieldCheck, Heart, Star, Award, Clock } from "lucide-react";
+import { Sparkles, ArrowRight, ShieldCheck, Award } from "lucide-react";
+
+export const instant = false;
 
 
 export default async function HomePage() {
@@ -58,10 +60,10 @@ export default async function HomePage() {
             <div>
               <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.25em] text-[#B8922A] font-semibold mb-2">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Jaipur Bestsellers</span>
+                <span>Curated Bestsellers</span>
               </div>
               <h2 className="font-serif text-3xl sm:text-4xl text-stone-900">
-                Royal Jewels of the Season
+                Trending Pieces of the Season
               </h2>
             </div>
             <Link
@@ -77,10 +79,10 @@ export default async function HomePage() {
             <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-stone-300 p-8">
               <Sparkles className="w-8 h-8 text-[#B8922A] mx-auto mb-3" />
               <h3 className="font-serif text-2xl text-stone-800 mb-2">
-                New Royal Collection Being Curated
+                New Collection Being Curated
               </h3>
               <p className="text-xs text-stone-500 max-w-md mx-auto mb-6">
-                Our master karigars are currently crafting heirloom pieces. Log in to the Admin Dashboard to publish products.
+                Our artisans are currently curating new pieces. Log in to the Admin Dashboard to publish products.
               </p>
               <Link
                 href="/admin/products/new"
@@ -99,40 +101,40 @@ export default async function HomePage() {
           )}
         </section>
 
-        {/* ── Brand Story / The Mahiraani Karigari ── */}
+        {/* ── Brand Story / Craftsmanship ── */}
         <section id="our-craft" className="py-20 bg-[#F4EFEB] border-y border-stone-200 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF8F4] border border-[#B8922A]/30 text-xs text-[#B8922A] font-semibold uppercase tracking-widest">
-                  The Mahiraani Legacy
+                  About MAHIRAANI
                 </div>
                 <h2 className="font-serif text-3xl sm:text-5xl text-stone-900 leading-tight">
-                  Crafted by Master Artisans in the Heart of Jaipur
+                  Handcrafted Jewellery Sourced Across India
                 </h2>
                 <p className="text-sm sm:text-base text-stone-600 font-light leading-relaxed">
-                  Every Mahiraani piece is shaped by generational karigars whose ancestors adorned the royal courts of Rajputana. Using ethically sourced semi-precious gems, hand-set uncut Polki, and resilient 22K gold micron layering, our heirlooms bridge classical royal opulence with lightweight comfort for today&apos;s festivities.
+                  Every MAHIRAANI piece is thoughtfully sourced from skilled artisans across different regions of India. Crafted with durable anti-tarnish finishes and skin-friendly materials, our jewellery brings everyday elegance straight to your wardrobe.
                 </p>
 
                 <div className="grid grid-cols-2 gap-6 pt-4">
                   <div className="border-l-2 border-[#B8922A] pl-4">
-                    <span className="block font-serif text-2xl text-stone-900 font-semibold">100%</span>
-                    <span className="text-xs text-stone-500 uppercase tracking-wider">Hallmarked & Certified</span>
+                    <span className="block font-serif text-2xl text-stone-900 font-semibold">Anti-Tarnish</span>
+                    <span className="text-xs text-stone-500 uppercase tracking-wider">Everyday Wear Quality</span>
                   </div>
                   <div className="border-l-2 border-[#6B2737] pl-4">
-                    <span className="block font-serif text-2xl text-stone-900 font-semibold">48h</span>
-                    <span className="text-xs text-stone-500 uppercase tracking-wider">Insured Express Dispatch</span>
+                    <span className="block font-serif text-2xl text-stone-900 font-semibold">24-48h</span>
+                    <span className="text-xs text-stone-500 uppercase tracking-wider">Express Dispatch Across India</span>
                   </div>
                 </div>
 
                 <div className="pt-2">
                   <a
-                    href="https://wa.me/919876543210?text=Hello%20Mahiraani%2C%20tell%20me%20more%20about%20custom%20bridal%20jewellery."
+                    href="https://wa.me/919146686816?text=Hello%20MAHIRAANI%2C%20I%20would%20like%20to%20enquire%20about%20jewellery."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#6B2737] hover:underline"
                   >
-                    <span>Enquire About Bespoke Bridal Orders</span>
+                    <span>Enquire on WhatsApp</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </a>
                 </div>
@@ -142,19 +144,19 @@ export default async function HomePage() {
               <div className="relative">
                 <div className="relative aspect-4/3 w-full bg-gradient-to-tr from-[#3D1420] to-[#1C1917] rounded-3xl overflow-hidden shadow-2xl p-8 flex flex-col justify-between text-[#FAF8F4] border border-[#B8922A]/30">
                   <div className="flex items-center justify-between">
-                    <span className="font-serif tracking-widest uppercase text-sm text-[#D4AB48]">Mahiraani Atelier</span>
+                    <span className="font-serif tracking-widest uppercase text-sm text-[#D4AB48]">MAHIRAANI</span>
                     <Award className="w-6 h-6 text-[#D4AB48]" />
                   </div>
 
                   <div className="my-auto py-6">
                     <p className="font-serif text-2xl sm:text-3xl italic text-[#FAF8F4] leading-snug">
-                      &ldquo;Jewellery that does not just ornament, but crowns your heritage.&rdquo;
+                      &ldquo;Jewellery designed for timeless everyday elegance and celebratory grace.&rdquo;
                     </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-4 border-t border-white/20 text-xs text-stone-300">
-                    <span>Authentic Rajasthani Craftsmanship</span>
-                    <span className="text-[#D4AB48]">Jaipur, India</span>
+                    <span>Artisanal Craftsmanship Sourced Across India</span>
+                    <span className="text-[#D4AB48]">Pune, Maharashtra, India</span>
                   </div>
                 </div>
               </div>
@@ -162,81 +164,72 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ── Testimonials: Voices of Our Queens ── */}
-        <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ── Brand Craft & Quality Pillars ── */}
+        <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-stone-200/60">
           <div className="text-center max-w-2xl mx-auto mb-14">
             <p className="text-xs uppercase tracking-[0.25em] text-[#B8922A] font-semibold mb-2">
-              Loved by Over 10,000+ Women
+              The MAHIRAANI Standard
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl text-stone-900">
-              Words From Our Queens
+              Artisanal Integrity &amp; Enduring Elegance
             </h2>
-            <div className="flex items-center justify-center gap-1 mt-3">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-[#B8922A] text-[#B8922A]" />
-              ))}
-              <span className="text-xs text-stone-500 font-medium ml-2">4.9 / 5 Overall Rating</span>
-            </div>
+            <p className="text-xs sm:text-sm text-stone-500 mt-3 font-light leading-relaxed">
+              Every creation is thoughtfully curated from trusted regional jewellery craft clusters across India, blending royal heritage aesthetics with modern anti-tarnish wearability.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 bg-white rounded-2xl border border-stone-200/80 shadow-xs flex flex-col justify-between">
               <div>
-                <div className="flex gap-1 text-[#B8922A] mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
+                <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-[#B8922A] mb-4">
+                  <Award className="w-5 h-5" />
                 </div>
-                <p className="text-xs sm:text-sm text-stone-700 font-light leading-relaxed italic">
-                  &ldquo;I ordered the earrings for my sister’s sangeet and was blown away! The weight, luster, and packaging felt like it arrived straight from an imperial royal palace.&rdquo;
+                <h3 className="font-serif text-lg text-stone-900 mb-2">
+                  Multi-Region Indian Curation
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
+                  We do not rely on a single manufacturing origin. Our collections bring together skilled craftsmen, polki artisans, and karigars from diverse heritage jewellery regions across India.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-semibold text-stone-900">Rhea Singhania</p>
-                  <p className="text-stone-400 text-[11px]">Mumbai • Verified Buyer</p>
-                </div>
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-2 text-xs text-stone-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8922A]" />
+                <span>Hand-finished inspection</span>
               </div>
             </div>
 
             <div className="p-8 bg-white rounded-2xl border border-stone-200/80 shadow-xs flex flex-col justify-between">
               <div>
-                <div className="flex gap-1 text-[#B8922A] mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
+                <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center text-[#6B2737] mb-4">
+                  <ShieldCheck className="w-5 h-5" />
                 </div>
-                <p className="text-xs sm:text-sm text-stone-700 font-light leading-relaxed italic">
-                  &ldquo;The WhatsApp team was so helpful in giving me video consultations to pair the choker with my lehenga colour. Dispatched within 24 hours to Bengaluru!&rdquo;
+                <h3 className="font-serif text-lg text-stone-900 mb-2">
+                  Protective Anti-Tarnish Finish
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
+                  Crafted to withstand everyday occasions and tropical climates. Sealed with hypoallergenic e-coating to preserve brilliant gold and antique finishes without tarnishing easily.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-semibold text-stone-900">Aparna Nair</p>
-                  <p className="text-stone-400 text-[11px]">Bengaluru • Verified Buyer</p>
-                </div>
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-2 text-xs text-stone-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#6B2737]" />
+                <span>Hypoallergenic &amp; skin-friendly</span>
               </div>
             </div>
 
             <div className="p-8 bg-white rounded-2xl border border-stone-200/80 shadow-xs flex flex-col justify-between">
               <div>
-                <div className="flex gap-1 text-[#B8922A] mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                  ))}
+                <div className="w-10 h-10 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-[#B8922A] mb-4">
+                  <Sparkles className="w-5 h-5" />
                 </div>
-                <p className="text-xs sm:text-sm text-stone-700 font-light leading-relaxed italic">
-                  &ldquo;Best online jewellery buying experience in India. The finish does not tarnish, and the complimentary velvet keepsake box is truly heirloom grade.&rdquo;
+                <h3 className="font-serif text-lg text-stone-900 mb-2">
+                  Direct Concierge in Pune
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-600 font-light leading-relaxed">
+                  Based in Pune, Maharashtra. Our personal styling team offers WhatsApp video consultations, styling suggestions, and direct priority tracking from reservation to delivery.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-                <div>
-                  <p className="font-semibold text-stone-900">Kavita Verma</p>
-                  <p className="text-stone-400 text-[11px]">New Delhi • Verified Buyer</p>
-                </div>
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <div className="mt-6 pt-4 border-t border-stone-100 flex items-center gap-2 text-xs text-stone-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#B8922A]" />
+                <span>Pune Studio • Direct Support</span>
               </div>
             </div>
           </div>

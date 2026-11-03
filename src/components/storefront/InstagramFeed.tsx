@@ -27,7 +27,7 @@ const posts = [
     tag: "Festive Edit",
     likes: "1.4k",
     comments: "84",
-    caption: "Wore the Mahiraani heirloom set for Diwali festivities. Pure poetry! ✨",
+    caption: "Wore the MAHIRAANI festive set for Diwali. Pure elegance! ✨",
     bgColor: "from-rose-900/80 to-stone-900",
   },
   {
@@ -42,16 +42,16 @@ const posts = [
   {
     id: 3,
     author: "@meera.deshmukh",
-    tag: "Jaipur Polki",
+    tag: "Festive Polki",
     likes: "980",
     comments: "45",
-    caption: "Obsessed with my bridal chokers from @mahiraani. Pure Jaipur artistry.",
+    caption: "Obsessed with my necklace from @mahiraani. Outstanding quality.",
     bgColor: "from-purple-900/80 to-stone-900",
   },
   {
     id: 4,
     author: "@simran_kaur",
-    tag: "Everyday Heirlooms",
+    tag: "Everyday Wear",
     likes: "1.8k",
     comments: "98",
     caption: "Elevates even a simple white linen shirt effortlessly. Love it! ❤️",
