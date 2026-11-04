@@ -7,8 +7,19 @@ export type { Prisma } from "@/generated/prisma/client";
 export { PrismaClient } from "@/generated/prisma/client";
 
 function createPrismaClient() {
-  const dbUrl = process.env.DATABASE_URL || "file:./prisma/dev.db";
-  const adapter = new PrismaBetterSqlite3({ url: dbUrl });
+  const isVercel = process.env.VERCEL === "1";
+  const isProduction = process.env.NODE_ENV === "production";
+  const dbUrl = process.env.DATABASE_URL;
+
+  // In production or on Vercel, forbid silent fallback to a local SQLite database
+  if ((isProduction || isVercel) && !dbUrl) {
+    throw new Error(
+      "[FATAL DATABASE GATE] DATABASE_URL environment variable is missing in production. Silent fallback to a local SQLite database is disabled to prevent data loss and runtime failures on serverless platforms. Please configure DATABASE_URL in your deployment environment."
+    );
+  }
+
+  const effectiveUrl = dbUrl || "file:./prisma/dev.db";
+  const adapter = new PrismaBetterSqlite3({ url: effectiveUrl });
 
   return new PrismaClient({
     adapter,
