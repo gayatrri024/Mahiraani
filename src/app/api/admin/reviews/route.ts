@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession, COOKIE_NAME } from "@/lib/auth";
-import type { Prisma } from "@/generated/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 
 export async function GET(req: NextRequest) {
   const adminCookie = req.cookies.get(COOKIE_NAME)?.value;

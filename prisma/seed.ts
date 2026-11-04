@@ -3,7 +3,7 @@
 // Run: npx ts-node --esm prisma/seed.ts  (or via npm run seed)
 // Sample products are marked isSample:true, status:"draft", excluded from live checkout.
 
-import { PrismaClient } from "../src/generated/prisma";
+import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 

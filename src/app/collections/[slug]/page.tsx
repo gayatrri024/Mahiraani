@@ -11,7 +11,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Sparkles, ChevronRight, Search } from "lucide-react";
 import type { Metadata } from "next";
-import type { Prisma } from "@/generated/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 
 export const instant = false;
 

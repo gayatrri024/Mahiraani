@@ -1,7 +1,10 @@
 // src/lib/prisma.ts – singleton Prisma client for Next.js dev/prod
 
-import { PrismaClient } from "@/generated/prisma";
+import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+
+export type { Prisma } from "@/generated/prisma/client";
+export { PrismaClient } from "@/generated/prisma/client";
 
 function createPrismaClient() {
   const dbUrl = process.env.DATABASE_URL || "file:./prisma/dev.db";

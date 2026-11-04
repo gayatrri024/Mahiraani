@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminSession } from "@/lib/auth";
-import type { Prisma } from "@/generated/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 
 export async function GET(req: NextRequest) {
   const session = await getAdminSession();
