@@ -10,7 +10,9 @@
     "type-check": "tsc --noEmit",
     "seed": "npx tsx prisma/seed.ts",
     "db:reset": "npx prisma migrate reset --force && npm run seed",
-    "db:studio": "npx prisma studio"
+    "db:studio": "npx prisma studio",
+    "admin:manage": "npx tsx scripts/manage-admin.ts",
+    "test:lifecycle": "npx tsx scripts/test-admin-product-lifecycle.ts"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.10.1",

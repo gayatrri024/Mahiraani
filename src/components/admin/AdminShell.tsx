@@ -57,6 +57,16 @@ export default function AdminShell({
         </div>
 
         <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+          <div className="mb-3 px-1">
+            <Link
+              href="/admin/products/new"
+              onClick={() => setSidebarOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-2 px-3 bg-[#B8922A] hover:bg-[#9E7728] text-white text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors shadow-xs"
+            >
+              <span>＋ Add Product</span>
+            </Link>
+          </div>
+
           {NAV.map((item) => {
             const active =
               item.href === "/admin"
@@ -78,14 +88,25 @@ export default function AdminShell({
               </Link>
             );
           })}
+
+          <div className="pt-4 mt-4 border-t border-stone-800/80 px-1">
+            <Link
+              href="/"
+              target="_blank"
+              className="flex items-center justify-between px-3 py-2 rounded-lg text-xs text-stone-400 hover:text-white hover:bg-stone-800/80 transition-colors"
+            >
+              <span>View Storefront</span>
+              <span className="text-stone-500">↗</span>
+            </Link>
+          </div>
         </nav>
 
         <div className="p-4 border-t border-stone-700">
-          <p className="text-xs text-stone-400 mb-1 truncate">{session.name}</p>
-          <p className="text-xs text-stone-500 mb-3 truncate">{session.email}</p>
+          <p className="text-xs text-stone-300 font-medium mb-0.5 truncate">{session.name}</p>
+          <p className="text-[11px] text-stone-500 mb-3 truncate">{session.email}</p>
           <button
             onClick={handleLogout}
-            className="w-full text-xs text-stone-400 hover:text-white hover:bg-stone-800 px-3 py-2 rounded-lg transition-colors text-left"
+            className="w-full text-xs text-stone-400 hover:text-red-400 hover:bg-stone-800 px-3 py-2 rounded-lg transition-colors text-left"
           >
             Sign out
           </button>
@@ -95,17 +116,35 @@ export default function AdminShell({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile top bar */}
-        <header className="lg:hidden flex items-center gap-3 bg-white border-b border-stone-200 px-4 py-3 sticky top-0 z-10">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-md hover:bg-stone-100"
-            aria-label="Open menu"
-          >
-            <span className="block w-5 h-0.5 bg-stone-600 mb-1" />
-            <span className="block w-5 h-0.5 bg-stone-600 mb-1" />
-            <span className="block w-5 h-0.5 bg-stone-600" />
-          </button>
-          <span className="text-sm font-semibold text-stone-800">MAHIRAANI Admin</span>
+        <header className="lg:hidden flex items-center justify-between bg-white border-b border-stone-200 px-4 py-3 sticky top-0 z-10">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-1.5 rounded-md hover:bg-stone-100"
+              aria-label="Open menu"
+            >
+              <span className="block w-5 h-0.5 bg-stone-600 mb-1" />
+              <span className="block w-5 h-0.5 bg-stone-600 mb-1" />
+              <span className="block w-5 h-0.5 bg-stone-600" />
+            </button>
+            <span className="text-sm font-semibold text-stone-800">MAHIRAANI</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/products/new"
+              className="text-xs bg-[#B8922A] text-white px-2.5 py-1.5 rounded-lg font-medium"
+            >
+              + Product
+            </Link>
+            <Link
+              href="/"
+              target="_blank"
+              className="text-xs border border-stone-200 text-stone-600 px-2.5 py-1.5 rounded-lg font-medium"
+            >
+              Store ↗
+            </Link>
+          </div>
         </header>
 
         <main className="flex-1 overflow-auto">{children}</main>

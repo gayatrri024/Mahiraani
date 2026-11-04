@@ -9,7 +9,7 @@ import { saveUploadedFile } from "@/lib/upload";
 type Params = Promise<{ id: string }>;
 
 export async function POST(req: NextRequest, { params }: { params: Params }) {
-  const session = await getAdminSession();
+  const session = await getAdminSession(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -55,8 +55,8 @@ export async function POST(req: NextRequest, { params }: { params: Params }) {
   return NextResponse.json({ images: created }, { status: 201 });
 }
 
-export async function GET(_req: NextRequest, { params }: { params: Params }) {
-  const session = await getAdminSession();
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const session = await getAdminSession(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;

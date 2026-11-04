@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { getAdminJwtSecret } from "@/lib/secrets";
 
-const COOKIE_NAME = "mhraani_admin_session";
+export const COOKIE_NAME = "mhraani_admin_session";
 
 export interface AdminSession {
   id: string;
@@ -62,9 +62,15 @@ export async function verifyAdminToken(token: string): Promise<AdminSession | nu
   }
 }
 
-export async function getAdminSession(tokenOverride?: string): Promise<AdminSession | null> {
-  if (tokenOverride) {
-    return verifyAdminToken(tokenOverride);
+export async function getAdminSession(
+  reqOrToken?: NextRequest | string
+): Promise<AdminSession | null> {
+  if (typeof reqOrToken === "string") {
+    return verifyAdminToken(reqOrToken);
+  }
+  if (reqOrToken && typeof reqOrToken === "object" && "cookies" in reqOrToken) {
+    const token = reqOrToken.cookies.get(COOKIE_NAME)?.value;
+    if (token) return verifyAdminToken(token);
   }
   try {
     const cookieStore = await cookies();
@@ -126,4 +132,4 @@ export function shouldSecureCookie(req: NextRequest): boolean {
   return true;
 }
 
-export { COOKIE_NAME };
+

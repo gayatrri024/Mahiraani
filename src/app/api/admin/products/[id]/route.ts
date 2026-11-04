@@ -36,8 +36,8 @@ const UpdateProductSchema = z.object({
 
 type Params = Promise<{ id: string }>;
 
-export async function GET(_req: NextRequest, { params }: { params: Params }) {
-  const session = await getAdminSession();
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const session = await getAdminSession(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -60,7 +60,7 @@ export async function GET(_req: NextRequest, { params }: { params: Params }) {
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Params }) {
-  const session = await getAdminSession();
+  const session = await getAdminSession(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
@@ -124,27 +124,64 @@ export async function PATCH(req: NextRequest, { params }: { params: Params }) {
   return NextResponse.json({ product: updated });
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Params }) {
-  const session = await getAdminSession();
+export async function DELETE(req: NextRequest, { params }: { params: Params }) {
+  const session = await getAdminSession(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
 
-  const product = await prisma.product.findUnique({ where: { id } });
-  if (!product) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  // Archive instead of hard-delete to preserve order history
-  await prisma.product.update({
+  const product = await prisma.product.findUnique({
     where: { id },
-    data: { status: "archived" },
+    include: { _count: { select: { orderItems: true } } },
+  });
+  if (!product) return NextResponse.json({ error: "Product not found" }, { status: 404 });
+
+  const searchParams = req.nextUrl.searchParams;
+  const forceArchive = searchParams.get("archive") === "true";
+
+  // If the product is linked to past orders or archive was explicitly requested, archive it
+  if (forceArchive || product._count.orderItems > 0) {
+    await prisma.product.update({
+      where: { id },
+      data: { status: "archived" },
+    });
+
+    await writeAuditLog({
+      adminUserId: session.id,
+      action: "product.archive",
+      entityType: "Product",
+      entityId: id,
+      payload: { reason: product._count.orderItems > 0 ? "orders_exist" : "admin_requested" },
+    });
+
+    return NextResponse.json({
+      ok: true,
+      archived: true,
+      message:
+        product._count.orderItems > 0
+          ? "This product has past order records and has been safely archived instead of permanently deleted."
+          : "Product archived successfully.",
+    });
+  }
+
+  // Safe to permanently delete (no orders exist)
+  await prisma.$transaction(async (tx) => {
+    // Delete cart items referencing this product or its variants
+    await tx.cartItem.deleteMany({ where: { productId: id } });
+    // Delete product (cascades images, variants, collections, reviews, wishlist)
+    await tx.product.delete({ where: { id } });
   });
 
   await writeAuditLog({
     adminUserId: session.id,
-    action: "product.archive",
+    action: "product.delete",
     entityType: "Product",
     entityId: id,
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({
+    ok: true,
+    deleted: true,
+    message: "Product permanently deleted.",
+  });
 }

@@ -9,27 +9,41 @@ export const instant = false;
 
 export default async function AdminProductsPage() {
   await connection();
-  const products = await prisma.product.findMany({
-    orderBy: { updatedAt: "desc" },
-    include: {
-      images: { where: { isCover: true }, take: 1 },
-      category: { select: { name: true } },
-      _count: { select: { variants: true } },
-    },
-  });
+  const [products, categories] = await Promise.all([
+    prisma.product.findMany({
+      orderBy: { updatedAt: "desc" },
+      include: {
+        images: { where: { isCover: true }, take: 1 },
+        category: { select: { id: true, name: true } },
+        _count: { select: { variants: true } },
+      },
+    }),
+    prisma.category.findMany({
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
+  ]);
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-stone-800">Products</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-stone-800">Products &amp; Inventory</h1>
+          <p className="text-xs text-stone-500 mt-1">
+            Manage your jewellery pieces, pricing, stock levels, and store status.
+          </p>
+        </div>
         <a
           href="/admin/products/new"
-          className="bg-stone-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-stone-700 transition-colors"
+          className="inline-flex items-center justify-center gap-2 bg-stone-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-800 transition-colors shadow-xs"
         >
-          + Add Product
+          <span>＋</span> Add Product
         </a>
       </div>
-      <ProductListClient initialProducts={products as ProductWithPreview[]} />
+      <ProductListClient
+        initialProducts={products as unknown as ProductWithPreview[]}
+        categories={categories}
+      />
     </div>
   );
 }
@@ -40,10 +54,12 @@ export type ProductWithPreview = {
   slug: string;
   status: string;
   basePrice: number | null;
+  stock: number | null;
+  lowStockThreshold: number | null;
   isSample: boolean;
   hasVariants: boolean;
   updatedAt: Date;
   images: { url: string; altText: string | null }[];
-  category: { name: string } | null;
+  category: { id: string; name: string } | null;
   _count: { variants: number };
 };

@@ -8,8 +8,8 @@ import { writeAuditLog } from "@/lib/audit";
 
 type Params = Promise<{ id: string }>;
 
-export async function POST(_req: NextRequest, { params }: { params: Params }) {
-  const session = await getAdminSession();
+export async function POST(req: NextRequest, { params }: { params: Params }) {
+  const session = await getAdminSession(req);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
