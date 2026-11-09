@@ -79,23 +79,25 @@ export default function ProductCard({ product }: ProductCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image container */}
-      <Link href={`/products/${product.slug}`} className="relative aspect-4/5 w-full bg-[#F5F2EB] overflow-hidden block">
-        {currentDisplayImage ? (
-          <Image
-            src={currentDisplayImage.url}
-            alt={currentDisplayImage.altText || product.name}
-            fill
-            className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-stone-100 text-stone-400 text-xs font-serif">
-            MAHIRAANI
-          </div>
-        )}
+      <div className="relative aspect-4/5 w-full bg-[#F5F2EB] overflow-hidden">
+        <Link href={`/products/${product.slug}`} className="absolute inset-0 block z-0" aria-label={product.name}>
+          {currentDisplayImage ? (
+            <Image
+              src={currentDisplayImage.url}
+              alt={currentDisplayImage.altText || product.name}
+              fill
+              className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-stone-100 text-stone-400 text-xs font-serif">
+              MAHIRAANI
+            </div>
+          )}
+        </Link>
 
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10 pointer-events-none">
           {product.isSample && (
             <span className="bg-amber-600/90 text-white text-[10px] uppercase font-bold tracking-widest px-2.5 py-0.5 rounded-full backdrop-blur-xs">
               Sample Piece
@@ -114,9 +116,10 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Quick actions (visible on mobile, hover on desktop) */}
         <div className="absolute bottom-2.5 inset-x-2.5 sm:bottom-3 sm:inset-x-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 z-10">
           <button
+            type="button"
             onClick={handleQuickAdd}
             disabled={isAdding}
-            className="flex-1 py-2 sm:py-2.5 px-3 bg-[#1C1917]/90 sm:bg-[#1C1917]/90 hover:bg-[#6B2737] text-white rounded-xl text-[11px] sm:text-xs uppercase tracking-wider font-medium flex items-center justify-center gap-1.5 shadow-md backdrop-blur-xs transition-colors"
+            className="flex-1 py-2 sm:py-2.5 px-3 bg-[#1C1917]/90 sm:bg-[#1C1917]/90 hover:bg-[#6B2737] text-white rounded-xl text-[11px] sm:text-xs uppercase tracking-wider font-medium flex items-center justify-center gap-1.5 shadow-md backdrop-blur-xs transition-colors cursor-pointer"
           >
             {isAdding ? (
               <>
@@ -131,7 +134,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </button>
         </div>
-      </Link>
+      </div>
 
       {/* Product Info */}
       <div className="p-4 flex flex-col flex-1 justify-between bg-white">

@@ -9,10 +9,13 @@ export { PrismaClient } from "@/generated/prisma/client";
 function createPrismaClient() {
   const isVercel = process.env.VERCEL === "1";
   const isProduction = process.env.NODE_ENV === "production";
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
   const dbUrl = process.env.DATABASE_URL;
 
-  // In production or on Vercel, forbid silent fallback to a local SQLite database
-  if ((isProduction || isVercel) && !dbUrl) {
+  // In production or on Vercel at runtime, forbid silent fallback to a local SQLite database.
+  // During the static build phase (NEXT_PHASE === "phase-production-build"), allow reading
+  // the bundled catalogue database so that Next.js static page generation succeeds.
+  if ((isProduction || isVercel) && !dbUrl && !isBuildPhase) {
     throw new Error(
       "[FATAL DATABASE GATE] DATABASE_URL environment variable is missing in production. Silent fallback to a local SQLite database is disabled to prevent data loss and runtime failures on serverless platforms. Please configure DATABASE_URL in your deployment environment."
     );

@@ -26,7 +26,12 @@ export async function generateStaticParams() {
       prisma.category.findMany({ select: { slug: true } }),
       prisma.collection.findMany({ select: { slug: true } }),
     ]);
-    const staticParams = [{ slug: "all" }, { slug: "under-999" }];
+    const staticParams = [
+      { slug: "all" },
+      { slug: "gold-base" },
+      { slug: "oxidised" },
+      { slug: "under-999" },
+    ];
     for (const c of categories) {
       if (c.slug && !staticParams.some((s) => s.slug === c.slug)) {
         staticParams.push({ slug: c.slug });
@@ -40,7 +45,12 @@ export async function generateStaticParams() {
     return staticParams;
   } catch (error) {
     console.error("Failed to generate static params for collections:", error);
-    return [{ slug: "all" }, { slug: "under-999" }];
+    return [
+      { slug: "all" },
+      { slug: "gold-base" },
+      { slug: "oxidised" },
+      { slug: "under-999" },
+    ];
   }
 }
 
@@ -50,6 +60,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "UNDER ₹999 | MAHIRAANI",
       description: "Discover handcrafted luxury jewellery under ₹999. Anti-tarnish, premium finish sourced across India.",
+    };
+  }
+  if (slug === "gold-base") {
+    return {
+      title: "GOLD-BASE JEWELLERY | MAHIRAANI",
+      description: "Explore exquisite gold-base jewellery with durable anti-tarnish protective layering. Sourced from skilled artisans across India.",
+    };
+  }
+  if (slug === "oxidised") {
+    return {
+      title: "OXIDISED JEWELLERY | MAHIRAANI",
+      description: "Discover handcrafted oxidised and antique-finish silver tone jewellery. Skin-friendly, regal designs curated across India.",
     };
   }
   const title = slug === "all" ? "All Jewellery" : slug.replace(/-/g, " ");
@@ -72,6 +94,9 @@ export default async function CollectionPage({ params, searchParams }: Props) {
     whereClause.OR = [
       { name: { contains: query } },
       { description: { contains: query } },
+      { shortDescription: { contains: query } },
+      { material: { contains: query } },
+      { finish: { contains: query } },
     ];
   }
 
@@ -85,6 +110,26 @@ export default async function CollectionPage({ params, searchParams }: Props) {
           { variants: { some: { price: { lte: 99900, gt: 0 }, isActive: true } } },
         ],
       },
+    ];
+  } else if (slug === "gold-base") {
+    title = "Gold-Base Jewellery";
+    description = "Exquisite warm gold-toned jewellery coated with durable anti-tarnish protective finish for long-lasting luster.";
+    whereClause.OR = [
+      { finish: { contains: "gold" } },
+      { material: { contains: "gold" } },
+      { name: { contains: "gold" } },
+      { description: { contains: "gold" } },
+    ];
+  } else if (slug === "oxidised") {
+    title = "Oxidised Jewellery";
+    description = "Artisanal oxidised and antique silver-tone jewellery. Intricate filigree and statement pieces curated across India.";
+    whereClause.OR = [
+      { finish: { contains: "oxidised" } },
+      { material: { contains: "oxidised" } },
+      { name: { contains: "oxidised" } },
+      { description: { contains: "oxidised" } },
+      { finish: { contains: "silver" } },
+      { material: { contains: "silver" } },
     ];
   } else if (slug !== "all") {
     // Check if category matches slug
@@ -163,6 +208,32 @@ export default async function CollectionPage({ params, searchParams }: Props) {
           <p className="text-xs sm:text-sm text-stone-500 mt-3 font-light leading-relaxed">
             {query ? `Showing available designs matching your search term.` : description}
           </p>
+        </div>
+
+        {/* Category & Collection Filter Pills */}
+        <div className="flex items-center justify-start sm:justify-center gap-2 overflow-x-auto pb-6 mb-4 no-scrollbar">
+          {[
+            { label: "All Jewellery", href: "/collections/all", active: slug === "all" && !query },
+            { label: "Gold-Base", href: "/collections/gold-base", active: slug === "gold-base" },
+            { label: "Oxidised", href: "/collections/oxidised", active: slug === "oxidised" },
+            { label: "Earrings", href: "/collections/earrings", active: slug === "earrings" },
+            { label: "Necklaces", href: "/collections/necklaces", active: slug === "necklaces" },
+            { label: "Bangles & Kadas", href: "/collections/bangles", active: slug === "bangles" },
+            { label: "Festive Edit", href: "/collections/festive-edit", active: slug === "festive-edit" },
+            { label: "Under ₹999", href: "/collections/under-999", active: slug === "under-999" },
+          ].map((pill) => (
+            <Link
+              key={pill.label}
+              href={pill.href}
+              className={`shrink-0 px-4 py-2 rounded-full text-xs font-medium tracking-wider uppercase transition-all ${
+                pill.active
+                  ? "bg-[#6B2737] text-white shadow-xs"
+                  : "bg-white text-stone-700 border border-stone-200/80 hover:border-stone-400 hover:text-stone-900"
+              }`}
+            >
+              {pill.label}
+            </Link>
+          ))}
         </div>
 
         {/* Product Count & Sort */}

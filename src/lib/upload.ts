@@ -23,19 +23,29 @@ export async function saveUploadedFile(file: File): Promise<UploadResult> {
     throw new Error(`File exceeds maximum size of ${MAX_FILE_BYTES / 1024 / 1024} MB.`);
   }
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
+  try {
+    await mkdir(UPLOAD_DIR, { recursive: true });
 
-  const ext = file.type.split("/")[1].replace("jpeg", "jpg");
-  const safeFilename = `${randomUUID()}.${ext}`;
-  const fullPath = path.join(UPLOAD_DIR, safeFilename);
+    const ext = file.type.split("/")[1].replace("jpeg", "jpg");
+    const safeFilename = `${randomUUID()}.${ext}`;
+    const fullPath = path.join(UPLOAD_DIR, safeFilename);
 
-  const bytes = await file.arrayBuffer();
-  await writeFile(fullPath, Buffer.from(bytes));
+    const bytes = await file.arrayBuffer();
+    await writeFile(fullPath, Buffer.from(bytes));
 
-  return {
-    url: `/uploads/${safeFilename}`,
-    filename: safeFilename,
-  };
+    return {
+      url: `/uploads/${safeFilename}`,
+      filename: safeFilename,
+    };
+  } catch (err: unknown) {
+    const error = err as NodeJS.ErrnoException;
+    if (error.code === "EROFS" || error.code === "EACCES" || process.env.VERCEL === "1") {
+      throw new Error(
+        "Local disk storage is read-only in this cloud serverless environment. Please configure persistent cloud image storage (such as Cloudflare R2, AWS S3, or Vercel Blob) in your environment settings."
+      );
+    }
+    throw err;
+  }
 }
 
 export async function deleteUploadedFile(url: string): Promise<void> {

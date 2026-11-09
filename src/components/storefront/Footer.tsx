@@ -4,6 +4,24 @@ import Link from "next/link";
 import { MessageCircle, Mail, MapPin } from "lucide-react";
 import Logo from "@/components/brand/Logo";
 
+function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
 export default function Footer() {
   return (
     <footer className="bg-[#1C1417] text-[#FAF8F4] pt-16 pb-24 lg:pb-16 border-t border-stone-800">
@@ -25,6 +43,15 @@ export default function Footer() {
               >
                 <MessageCircle className="w-4 h-4 text-[#25D366]" />
                 <span>WhatsApp Concierge: +91 91466 86816</span>
+              </a>
+              <a
+                href="https://instagram.com/nishtha_gallery_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-[#D4AB48] transition-colors"
+              >
+                <InstagramIcon className="w-4 h-4 text-[#E1306C]" />
+                <span>Instagram: @nishtha_gallery_</span>
               </a>
               <div className="flex items-center gap-2 text-stone-400">
                 <Mail className="w-4 h-4 text-stone-500" />
@@ -49,18 +76,28 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/collections/gold-base" className="hover:text-white transition-colors">
+                  Gold-Base Jewellery
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections/oxidised" className="hover:text-white transition-colors">
+                  Oxidised Jewellery
+                </Link>
+              </li>
+              <li>
                 <Link href="/collections/earrings" className="hover:text-white transition-colors">
-                  Earrings & Jhumkas
+                  Earrings &amp; Jhumkas
                 </Link>
               </li>
               <li>
                 <Link href="/collections/necklaces" className="hover:text-white transition-colors">
-                  Necklaces & Chokers
+                  Necklaces &amp; Chokers
                 </Link>
               </li>
               <li>
                 <Link href="/collections/bangles" className="hover:text-white transition-colors">
-                  Bangles & Kadas
+                  Bangles &amp; Kadas
                 </Link>
               </li>
               <li>

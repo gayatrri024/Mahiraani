@@ -28,6 +28,8 @@ export default function Header() {
     { label: "Earrings", href: "/collections/earrings" },
     { label: "Necklaces", href: "/collections/necklaces" },
     { label: "Bangles & Kadas", href: "/collections/bangles" },
+    { label: "Gold-Base Jewellery", href: "/collections/gold-base" },
+    { label: "Oxidised Jewellery", href: "/collections/oxidised" },
     { label: "Festive Edit", href: "/collections/festive-edit" },
     { label: "Track My Order", href: "/track-order" },
   ];
@@ -57,7 +59,7 @@ export default function Header() {
             </div>
 
             {/* Desktop Left Nav */}
-            <nav className="hidden lg:flex items-center gap-7 text-xs tracking-widest uppercase font-medium text-stone-700">
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-7 text-xs tracking-widest uppercase font-medium text-stone-700">
               <Link href="/collections/all" className="hover:text-[#6B2737] transition-colors">
                 Shop All
               </Link>
@@ -66,6 +68,9 @@ export default function Header() {
               </Link>
               <Link href="/collections/necklaces" className="hover:text-[#6B2737] transition-colors">
                 Necklaces
+              </Link>
+              <Link href="/collections/bangles" className="hover:text-[#6B2737] transition-colors">
+                Bangles
               </Link>
               <Link href="/collections/festive-edit" className="hover:text-[#6B2737] transition-colors text-[#6B2737] font-semibold">
                 Festive Edit

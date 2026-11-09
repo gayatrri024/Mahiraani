@@ -117,7 +117,7 @@ export default function HeroBanner() {
         </div>
       </section>
 
-      {/* ── Ornamental Indian Filigree Divider (Padmora Signature Motif) ── */}
+      {/* ── Ornamental Indian Filigree Divider (Mahiraani Lotus Signature Motif) ── */}
       <div className="w-full py-6 flex items-center justify-center gap-3 text-[#B8922A]/70 select-none">
         <div className="h-[1px] w-12 sm:w-28 bg-gradient-to-r from-transparent to-[#B8922A]/60" />
         <span className="text-[10px] tracking-widest text-[#B8922A]">◇ ─ ◇ ─ ◇</span>

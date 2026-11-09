@@ -76,21 +76,36 @@ export default async function HomePage() {
           </div>
 
           {products.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-dashed border-stone-300 p-8">
-              <Sparkles className="w-8 h-8 text-[#B8922A] mx-auto mb-3" />
-              <h3 className="font-serif text-2xl text-stone-800 mb-2">
-                New Collection Being Curated
+            <div className="text-center py-16 bg-white rounded-3xl border border-stone-200/80 p-8 sm:p-12 max-w-xl mx-auto shadow-xs">
+              <div className="w-12 h-12 rounded-full bg-[#FAF0F2] text-[#6B2737] flex items-center justify-center mx-auto mb-4 border border-[#F0D5DC]">
+                <Sparkles className="w-6 h-6 text-[#B8922A]" />
+              </div>
+              <span className="text-[10px] uppercase tracking-[0.25em] text-[#9E7728] font-semibold">
+                Curated Jewellery
+              </span>
+              <h3 className="font-serif text-2xl sm:text-3xl text-stone-900 mt-1 mb-2 font-normal">
+                New Designs Arriving Soon
               </h3>
-              <p className="text-xs text-stone-500 max-w-md mx-auto mb-6">
-                Our artisans are currently curating new pieces. Log in to the Admin Dashboard to publish products.
+              <p className="text-xs sm:text-sm text-stone-500 max-w-md mx-auto mb-6 leading-relaxed font-light">
+                Our master karigars are currently handcrafting our upcoming festive and everyday collection. Follow our journey on Instagram for first looks, or connect with our Pune studio concierge.
               </p>
-              <Link
-                href="/admin/products/new"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#6B2737] text-white rounded-full text-xs uppercase tracking-wider font-medium hover:bg-[#521c29]"
-              >
-                <span>Upload First Product in Admin</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href="/collections/all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#6B2737] text-white rounded-full text-xs uppercase tracking-wider font-medium hover:bg-[#521c29] transition-colors shadow-xs"
+                >
+                  <span>Explore Catalogue</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+                <a
+                  href="https://wa.me/919146686816?text=Hello%20MAHIRAANI%2C%20I%20would%20like%20to%20enquire%20about%20upcoming%20jewellery%20designs."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#25D366] text-white rounded-full text-xs uppercase tracking-wider font-semibold hover:bg-[#20ba59] transition-colors shadow-xs"
+                >
+                  <span>WhatsApp Concierge</span>
+                </a>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">

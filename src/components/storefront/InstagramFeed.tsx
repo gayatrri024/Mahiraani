@@ -45,7 +45,7 @@ const posts = [
     tag: "Festive Polki",
     likes: "980",
     comments: "45",
-    caption: "Obsessed with my necklace from @mahiraani. Outstanding quality.",
+    caption: "Obsessed with my necklace from @nishtha_gallery_. Outstanding quality.",
     bgColor: "from-purple-900/80 to-stone-900",
   },
   {
@@ -66,13 +66,13 @@ export default function InstagramFeed() {
         <div className="text-center max-w-xl mx-auto mb-10">
           <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.25em] text-[#6B2737] font-semibold mb-2">
             <InstagramIcon className="w-4 h-4 text-[#B8922A]" />
-            <span>@mahiraani on Instagram</span>
+            <span>@nishtha_gallery_ on Instagram</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl text-stone-900">
-            As Seen On Our Queens
+            As Seen On Our Patrons
           </h2>
           <p className="text-xs sm:text-sm text-stone-500 mt-2 font-light">
-            Tag @mahiraani on your special day to be featured in our royal gallery.
+            Tag @nishtha_gallery_ on your special day to be featured in our royal gallery.
           </p>
         </div>
 
@@ -117,13 +117,13 @@ export default function InstagramFeed() {
 
         <div className="mt-8 text-center">
           <a
-            href="https://instagram.com"
+            href="https://instagram.com/nishtha_gallery_"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-2.5 border border-stone-300 rounded-full text-xs uppercase tracking-widest text-stone-700 hover:text-stone-900 hover:border-stone-500 transition-colors bg-white shadow-xs"
           >
             <InstagramIcon className="w-3.5 h-3.5 text-[#6B2737]" />
-            <span>Follow Our Journey on Instagram</span>
+            <span>Follow @nishtha_gallery_ on Instagram</span>
           </a>
         </div>
       </div>

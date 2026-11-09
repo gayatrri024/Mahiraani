@@ -37,6 +37,7 @@ export default function CheckoutModal({
   const [paymentMethod, setPaymentMethod] = useState<"manual_upi" | "razorpay">("manual_upi");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [consultationNotice, setConsultationNotice] = useState<{ message: string; url: string } | null>(null);
   const [confirmedOrder, setConfirmedOrder] = useState<{
     reference: string;
     accessToken: string;
@@ -86,7 +87,14 @@ export default function CheckoutModal({
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Failed to place order");
+        if (data.consultationMode && data.whatsappUrl) {
+          setConsultationNotice({
+            message: data.error || "Online ordering is in concierge consultation mode.",
+            url: data.whatsappUrl,
+          });
+        } else {
+          setError(data.error || "Failed to place order");
+        }
       } else {
         setConfirmedOrder(data.order);
         onOrderSuccess(data.order.reference);
@@ -115,7 +123,61 @@ export default function CheckoutModal({
           <X className="w-5 h-5" />
         </button>
 
-        {confirmedOrder ? (
+        {consultationNotice ? (
+          <div className="text-center py-4 space-y-5 animate-fadeIn">
+            <div className="w-16 h-16 bg-[#FAF0F2] rounded-full flex items-center justify-center mx-auto text-[#6B2737] border border-[#F0D5DC] shadow-xs">
+              <MessageCircle className="w-8 h-8 text-[#25D366]" />
+            </div>
+
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.25em] text-[#9E7728] font-medium">
+                MAHIRAANI Pune Concierge
+              </p>
+              <h2 className="font-serif text-2xl sm:text-3xl text-[#6B2737] mt-1 font-normal">
+                Confirm Order via WhatsApp
+              </h2>
+              <p className="text-xs text-stone-600 mt-2 max-w-md mx-auto leading-relaxed">
+                {consultationNotice.message}
+              </p>
+            </div>
+
+            <div className="p-4 bg-white border border-stone-200 rounded-2xl text-left text-xs space-y-2 text-stone-700">
+              <div className="flex justify-between border-b border-stone-100 pb-2">
+                <span className="text-stone-500">Designs in Bag</span>
+                <span className="font-medium text-right max-w-[65%] line-clamp-1">{items.map((i) => i.name).join(", ")}</span>
+              </div>
+              <div className="flex justify-between border-b border-stone-100 pb-2">
+                <span className="text-stone-500">Delivery Destination</span>
+                <span className="text-right font-medium">{city}, {state} ({pincode})</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-stone-500">Order Value</span>
+                <span className="font-bold text-[#6B2737] font-serif text-sm">
+                  {formatINR(finalTotalPaise)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <a
+                href={consultationNotice.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 py-3 px-4 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all"
+              >
+                <MessageCircle className="w-4 h-4 fill-current" />
+                <span>Send Order Slip on WhatsApp</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setConsultationNotice(null)}
+                className="py-3 px-5 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors"
+              >
+                <span>Edit Bag</span>
+              </button>
+            </div>
+          </div>
+        ) : confirmedOrder ? (
           <div className="text-center py-4 space-y-5 animate-fadeIn">
             <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-600 border border-emerald-200 shadow-xs">
               <CheckCircle2 className="w-9 h-9" />

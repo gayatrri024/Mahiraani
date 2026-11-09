@@ -44,6 +44,26 @@ export async function POST(req: NextRequest) {
 
     const data = parsed.data;
 
+    // SQLite Serverless Write Protection Gate:
+    // SQLite must not be used for persistent writes in Vercel serverless functions
+    // until production PostgreSQL storage is configured.
+    const isVercel = process.env.VERCEL === "1";
+    const isSqlite = !process.env.DATABASE_URL || process.env.DATABASE_URL.startsWith("file:");
+
+    if (isVercel && isSqlite) {
+      return NextResponse.json(
+        {
+          error:
+            "Online orders are currently in concierge consultation mode. Please confirm your selection directly with our Pune studio concierge on WhatsApp (+91 91466 86816) for insured dispatch.",
+          consultationMode: true,
+          whatsappUrl: `https://wa.me/919146686816?text=${encodeURIComponent(
+            `*MAHIRAANI Concierge Order Enquiry*\nCustomer: ${data.customerName}\nPhone: ${data.customerPhone}\nCity: ${data.city}, ${data.state} (${data.pincode})\nItems: ${data.items.length} design(s)\n\nPlease confirm availability and payment details!`
+          )}`,
+        },
+        { status: 503 }
+      );
+    }
+
     // Fetch and verify products from database
     const productIds = data.items.map((i) => i.productId);
     const dbProducts = await prisma.product.findMany({
