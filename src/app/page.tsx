@@ -18,26 +18,44 @@ export const instant = false;
 
 export default async function HomePage() {
   // Fetch published products from the database
-  const products = await prisma.product.findMany({
-    where: {
-      status: "published",
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    include: {
-      images: {
-        orderBy: { sortOrder: "asc" },
+  let products: {
+    id: string;
+    name: string;
+    slug: string;
+    basePrice: number | null;
+    comparePrice?: number | null;
+    status: string;
+    isSample: boolean;
+    shortDescription?: string | null;
+    images: { id: string; url: string; altText: string | null; isCover: boolean }[];
+    category: { name: string; slug: string } | null;
+    variants: { id: string; name: string; price: number; stock: number }[];
+  }[] = [];
+
+  try {
+    products = await prisma.product.findMany({
+      where: {
+        status: "published",
       },
-      category: {
-        select: { name: true, slug: true },
+      orderBy: {
+        createdAt: "desc",
       },
-      variants: {
-        where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
+      include: {
+        images: {
+          orderBy: { sortOrder: "asc" },
+        },
+        category: {
+          select: { name: true, slug: true },
+        },
+        variants: {
+          where: { isActive: true },
+          orderBy: { sortOrder: "asc" },
+        },
       },
-    },
-  });
+    }) as unknown as typeof products;
+  } catch (error) {
+    console.error("Failed to fetch published products for HomePage:", error);
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F4] text-stone-900 selection:bg-[#6B2737] selection:text-white">

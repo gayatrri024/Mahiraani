@@ -31,68 +31,96 @@ export async function generateStaticParams() {
       where: { status: "published" },
       select: { slug: true },
     });
-    return products.map((p) => ({ slug: p.slug }));
+    if (products.length > 0) {
+      return products.map((p) => ({ slug: p.slug }));
+    }
   } catch (error) {
     console.error("Failed to generate static params for products:", error);
-    return [];
   }
+  // Next.js 16 with Cache Components requires generateStaticParams to return at least one result
+  return [{ slug: "modern-art-earrings" }];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    select: { name: true, shortDescription: true, description: true },
-  });
+  try {
+    const product = await prisma.product.findUnique({
+      where: { slug },
+      select: { name: true, shortDescription: true, description: true },
+    });
 
-  if (!product) return { title: "Product Not Found – Mahiraani" };
+    if (!product) return { title: "Product Not Found – Mahiraani" };
 
-  return {
-    title: `${product.name} | MAHIRAANI`,
-    description:
-      product.shortDescription ||
-      product.description ||
-      "Handcrafted jewellery from MAHIRAANI, Pune, India.",
-  };
+    return {
+      title: `${product.name} | MAHIRAANI`,
+      description:
+        product.shortDescription ||
+        product.description ||
+        "Handcrafted jewellery from MAHIRAANI, Pune, India.",
+    };
+  } catch (error) {
+    console.error("Failed to generate metadata for product:", error);
+    return { title: "Handcrafted Indian Jewellery | MAHIRAANI" };
+  }
 }
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
 
-  const product = await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      images: { orderBy: { sortOrder: "asc" } },
-      category: { select: { name: true, slug: true } },
-      variants: {
-        where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
+  let product = null;
+  try {
+    product = await prisma.product.findUnique({
+      where: { slug },
+      include: {
+        images: { orderBy: { sortOrder: "asc" } },
+        category: { select: { name: true, slug: true } },
+        variants: {
+          where: { isActive: true },
+          orderBy: { sortOrder: "asc" },
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.error("Failed to load product details for page:", error);
+  }
 
   if (!product) {
     notFound();
   }
 
   // Approved reviews for this product
-  const reviewsData = await prisma.review.findMany({
-    where: {
-      productId: product.id,
-      status: "approved",
-    },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      rating: true,
-      title: true,
-      comment: true,
-      customerName: true,
-      isVerifiedPurchase: true,
-      images: true,
-      createdAt: true,
-    },
-  });
+  let reviewsData: {
+    id: string;
+    rating: number;
+    title: string | null;
+    comment: string;
+    customerName: string;
+    isVerifiedPurchase: boolean;
+    images: string[] | null;
+    createdAt: Date;
+  }[] = [];
+
+  try {
+    reviewsData = await prisma.review.findMany({
+      where: {
+        productId: product.id,
+        status: "approved",
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        rating: true,
+        title: true,
+        comment: true,
+        customerName: true,
+        isVerifiedPurchase: true,
+        images: true,
+        createdAt: true,
+      },
+    }) as unknown as typeof reviewsData;
+  } catch (error) {
+    console.error("Failed to load product reviews:", error);
+  }
 
   const totalReviews = reviewsData.length;
   const averageRating =
@@ -137,22 +165,39 @@ export default async function ProductDetailPage({ params }: Props) {
   }
 
   // Related products
-  const related = await prisma.product.findMany({
-    where: {
-      status: "published",
-      id: { not: product.id },
-    },
-    take: 4,
-    orderBy: { createdAt: "desc" },
-    include: {
-      images: { orderBy: { sortOrder: "asc" } },
-      category: { select: { name: true, slug: true } },
-      variants: {
-        where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
+  let related: {
+    id: string;
+    name: string;
+    slug: string;
+    basePrice: number | null;
+    comparePrice?: number | null;
+    status: string;
+    isSample: boolean;
+    images: { id: string; url: string; altText: string | null; isCover: boolean }[];
+    category: { name: string; slug: string } | null;
+    variants: { id: string; name: string; price: number; stock: number }[];
+  }[] = [];
+
+  try {
+    related = await prisma.product.findMany({
+      where: {
+        status: "published",
+        id: { not: product.id },
       },
-    },
-  });
+      take: 4,
+      orderBy: { createdAt: "desc" },
+      include: {
+        images: { orderBy: { sortOrder: "asc" } },
+        category: { select: { name: true, slug: true } },
+        variants: {
+          where: { isActive: true },
+          orderBy: { sortOrder: "asc" },
+        },
+      },
+    }) as unknown as typeof related;
+  } catch (error) {
+    console.error("Failed to load related products:", error);
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F4] text-stone-900">

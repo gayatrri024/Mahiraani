@@ -1,10 +1,61 @@
 // src/lib/prisma.ts – singleton Prisma client for Next.js dev/prod
 
+import path from "path";
+import fs from "fs";
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 
 export type { Prisma } from "@/generated/prisma/client";
 export { PrismaClient } from "@/generated/prisma/client";
+
+/**
+ * Resolves SQLite database URL to an absolute filesystem path.
+ * This prevents better-sqlite3 from failing with "Cannot open database because
+ * the directory does not exist" when Next.js worker threads execute from subdirectories (e.g. .next).
+ */
+function resolveSqliteUrl(rawUrl?: string): string {
+  if (rawUrl && !rawUrl.startsWith("file:")) {
+    return rawUrl;
+  }
+
+  const rawPath = rawUrl ? rawUrl.replace(/^file:/, "") : "";
+
+  // If already an absolute path and exists, use it directly
+  if (rawPath && path.isAbsolute(rawPath) && fs.existsSync(rawPath)) {
+    return `file:${rawPath}`;
+  }
+
+  const candidates: string[] = [];
+
+  if (rawPath) {
+    candidates.push(path.resolve(process.cwd(), rawPath.replace(/^\.\//, "")));
+  }
+
+  candidates.push(
+    path.resolve(process.cwd(), "prisma", "dev.db"),
+    path.join(process.cwd(), "prisma", "dev.db"),
+    path.resolve(__dirname, "..", "..", "prisma", "dev.db"),
+    path.resolve(__dirname, "..", "..", "..", "prisma", "dev.db")
+  );
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return `file:${candidate}`;
+    }
+  }
+
+  const fallback = path.resolve(process.cwd(), "prisma", "dev.db");
+  const fallbackDir = path.dirname(fallback);
+  try {
+    if (!fs.existsSync(fallbackDir)) {
+      fs.mkdirSync(fallbackDir, { recursive: true });
+    }
+  } catch {
+    // Ignore in read-only serverless environments
+  }
+
+  return `file:${fallback}`;
+}
 
 function createPrismaClient() {
   const isVercel = process.env.VERCEL === "1";
@@ -21,7 +72,7 @@ function createPrismaClient() {
     );
   }
 
-  const effectiveUrl = dbUrl || "file:./prisma/dev.db";
+  const effectiveUrl = resolveSqliteUrl(dbUrl);
   const adapter = new PrismaBetterSqlite3({ url: effectiveUrl });
 
   return new PrismaClient({

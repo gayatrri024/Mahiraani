@@ -160,18 +160,36 @@ export default async function CollectionPage({ params, searchParams }: Props) {
     }
   }
 
-  const products = await prisma.product.findMany({
-    where: whereClause,
-    orderBy: { createdAt: "desc" },
-    include: {
-      images: { orderBy: { sortOrder: "asc" } },
-      category: { select: { name: true, slug: true } },
-      variants: {
-        where: { isActive: true },
-        orderBy: { sortOrder: "asc" },
+  let products: {
+    id: string;
+    name: string;
+    slug: string;
+    basePrice: number | null;
+    comparePrice?: number | null;
+    status: string;
+    isSample: boolean;
+    shortDescription?: string | null;
+    images: { id: string; url: string; altText: string | null; isCover: boolean }[];
+    category: { name: string; slug: string } | null;
+    variants: { id: string; name: string; price: number; stock: number }[];
+  }[] = [];
+
+  try {
+    products = await prisma.product.findMany({
+      where: whereClause,
+      orderBy: { createdAt: "desc" },
+      include: {
+        images: { orderBy: { sortOrder: "asc" } },
+        category: { select: { name: true, slug: true } },
+        variants: {
+          where: { isActive: true },
+          orderBy: { sortOrder: "asc" },
+        },
       },
-    },
-  });
+    }) as unknown as typeof products;
+  } catch (error) {
+    console.error("Failed to load products for collection:", error);
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF8F4] text-stone-900">
